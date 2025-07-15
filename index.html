@@ -78,6 +78,18 @@
         .btn-glow:hover::after {
             opacity: 1;
         }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        @keyframes shine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
     </style>
 </head>
 <body>
@@ -89,7 +101,7 @@
         <div class="hero-content">
             <div class="text-center">
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 floating">
-                   Rare Grade Devs - Programme
+                   Rare Grade <span class="gradient-text">Devs</span> - Programme
                 </h1>
                 <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl">
                     Empowering tertiary learners to master software coding and hardware design through cutting-edge courses and real-world projects.
