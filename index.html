@@ -379,7 +379,7 @@
             // Basic email validation for university domains
             const emailRegex = /^[\w-.]+@([\w-]+\.)+[edu]{3}$/;
             if (!emailRegex.test(email)) {
-                alertMessage.textContent = 'Please enter a valid university email address (e.g., student@university.edu).';
+                alertMessage.textContent = 'Please enter a valid institution email address (e.g., student@university.edu).';
                 alertModal.style.display = 'flex';
                 gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
                 return;
