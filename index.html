@@ -67,6 +67,7 @@
         .input-field {
             transition: border-color 0.3s ease, transform 0.3s ease;
             font-family: 'Fira Code', monospace;
+            margin-bottom: 1rem; /* Consistent spacing */
         }
         .input-field:focus {
             transform: scale(1.02);
@@ -82,6 +83,7 @@
             font-weight: 600;
             border: 1px solid #020084;
             z-index: 10;
+            margin-bottom: 1rem; /* Consistent spacing */
         }
         .btn-glow::after {
             content: '';
@@ -123,6 +125,60 @@
             font-family: 'Fira Code', monospace;
             font-weight: 400;
         }
+        .logo {
+            max-width: 150px;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .card-icon {
+            max-width: 50px;
+            width: 100%;
+            margin: 0 auto 1rem;
+        }
+        /* Custom Alert Modal */
+        .alert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 0, 132, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .alert-content {
+            background: rgba(30, 64, 175, 0.95);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid #93c5fd;
+            opacity: 0;
+        }
+        .alert-content p {
+            font-family: 'Fira Code', monospace;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+        }
+        .alert-close {
+            background: #ffffff;
+            color: #020084;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            border: 1px solid #020084;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .alert-close:hover {
+            background: #e5e7eb;
+        }
         /* Mobile optimizations */
         @media (max-width: 640px) {
             .hero {
@@ -142,6 +198,7 @@
             .input-field, .btn-glow {
                 font-size: 0.875rem;
                 padding: 0.75rem;
+                margin-bottom: 0.75rem; /* Consistent spacing for mobile */
             }
             .hero h1 {
                 font-size: 2rem;
@@ -159,6 +216,24 @@
             .features-section .p-6 {
                 padding: 1.5rem;
             }
+            .alert-content {
+                width: 90%;
+                padding: 1rem;
+            }
+            .alert-content p {
+                font-size: 0.875rem;
+            }
+            .alert-close {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+            .logo {
+                max-width: 100px;
+            }
+            .card-icon {
+                max-width: 40px;
+                margin-bottom: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -170,6 +245,7 @@
         </svg>
         <div class="hero-content">
             <div class="text-center">
+                <img src="https://dashboard.raregradetech.com/uploads/company/b65f0e95c1b847586fb52cd9c734f19a.png" alt="Rare Grade Tech Logo" class="logo">
                 <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mb-4 floating">
                     Rare Grade <span class="gradient-text">Devs</span> - Programme
                 </h1>
@@ -197,18 +273,37 @@
         </div>
     </section>
 
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert" class="alert-modal">
+        <div class="alert-content">
+            <p id="alert-message"></p>
+            <button class="alert-close" onclick="closeAlert()">Close</button>
+        </div>
+    </div>
+
     <!-- Features Section -->
     <section class="features-section py-12 sm:py-16 bg-blue-950/50 w-full">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4 sm:px-6">
             <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
+                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
+                    <path d="M50 20 C30 20, 20 30, 20 50 C20 70, 30 80, 50 80 C70 80, 80 70, 80 50 C80 30, 70 20, 50 20" stroke-linecap="round"/>
+                    <path d="M50 40 V60 M40 50 H60" stroke-linecap="round"/>
+                </svg>
                 <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Industry-Leading Mentors</h3>
                 <p class="text-gray-300 text-sm sm:text-base">Learn from experts shaping the tech world in software and hardware.</p>
             </div>
             <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
+                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
+                    <path d="M20 30 H80 V70 H20 Z" stroke-linecap="round"/>
+                    <path d="M30 25 V30 H70 V25" stroke-linecap="round"/>
+                </svg>
                 <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Practical Projects</h3>
                 <p class="text-gray-300 text-sm sm:text-base">Build apps and hardware prototypes to boost your portfolio.</p>
             </div>
             <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
+                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
+                    <path d="M50 20 L65 40 H35 Z M50 40 V80" stroke-linecap="round"/>
+                </svg>
                 <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Competitive Challenges</h3>
                 <p class="text-gray-300 text-sm sm:text-base">Compete in coding sprints and hackathons to stand out.</p>
             </div>
@@ -228,6 +323,8 @@
             delay: 1, 
             ease: "power2.out" 
         });
+        gsap.from(".logo", { duration: 1, y: -50, opacity: 0, delay: 0.2, ease: "power3.out" });
+        gsap.from(".card-icon", { duration: 1, opacity: 0, scale: 0.5, stagger: 0.2, delay: 1.2, ease: "elastic.out(1, 0.6)" });
         gsap.to(".circuit-overlay path", { 
             duration: 12, 
             strokeDashoffset: -120, 
@@ -242,16 +339,22 @@
             const school = document.getElementById('school').value;
             const location = document.getElementById('location').value;
             const course = document.getElementById('course').value;
+            const alertModal = document.getElementById('custom-alert');
+            const alertMessage = document.getElementById('alert-message');
             
             // Basic email validation for university domains
             const emailRegex = /^[\w-.]+@([\w-]+\.)+[edu]{3}$/;
             if (!emailRegex.test(email)) {
-                alert('Please enter a valid university email address (e.g., student@university.edu).');
+                alertMessage.textContent = 'Please enter a valid university email address (e.g., student@university.edu).';
+                alertModal.style.display = 'flex';
+                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
                 return;
             }
 
             if (name && email && school && location && course) {
-                alert(`Welcome, ${name}! You've registered for ${course} course(s) from ${school}, ${location}. Check your email (${email}) for confirmation.`);
+                alertMessage.textContent = `Welcome, ${name}! You've registered for ${course} course(s) from ${school}, ${location}. Check your email (${email}) for confirmation.`;
+                alertModal.style.display = 'flex';
+                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
                 // Reset form
                 document.getElementById('name').value = '';
                 document.getElementById('email').value = '';
@@ -259,8 +362,23 @@
                 document.getElementById('location').value = '';
                 document.getElementById('course').value = '';
             } else {
-                alert('Please fill in all fields.');
+                alertMessage.textContent = 'Please fill in all fields.';
+                alertModal.style.display = 'flex';
+                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
             }
+        }
+
+        // Close Alert Function
+        function closeAlert() {
+            const alertModal = document.getElementById('custom-alert');
+            gsap.to(".alert-content", { 
+                duration: 0.3, 
+                opacity: 0, 
+                ease: "power2.in", 
+                onComplete: () => {
+                    alertModal.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>
