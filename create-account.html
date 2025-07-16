@@ -149,6 +149,31 @@
         .alert-close:hover {
             background: #e5e7eb;
         }
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 0, 132, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #93c5fd;
+            border-top: 6px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         @media (max-width: 640px) {
             .auth-container {
                 padding: 1rem;
@@ -172,6 +197,11 @@
                 padding: 0.4rem 0.8rem;
                 font-size: 0.875rem;
             }
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border-width: 4px;
+            }
         }
     </style>
 </head>
@@ -184,10 +214,10 @@
         <h1 class="text-xl sm:text-2xl font-semibold text-white mb-6">Create Your <span class="gradient-text">Account</span></h1>
         <div class="space-y-4">
             <div class="form-group">
-                <input type="email" id="email" placeholder="Institution Email" class="form-input w-full">
+                <input type="email" id="personal-email" placeholder="Personal Email" class="form-input w-full" required>
             </div>
             <div class="form-group">
-                <input type="password" id="password" placeholder="Password" class="form-input w-full">
+                <input type="password" id="password" placeholder="Password (min 6 characters)" class="form-input w-full" required>
             </div>
             <button class="btn-glow w-full" onclick="createAccount()">Create Account</button>
         </div>
@@ -197,6 +227,9 @@
             <p id="alert-message"></p>
             <button class="alert-close" onclick="closeAlert()">Close</button>
         </div>
+    </div>
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="spinner"></div>
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
@@ -224,63 +257,44 @@
         gsap.from(".form-group", { duration: 0.8, y: 20, opacity: 0, stagger: 0.1, delay: 1, ease: "power2.out" });
         gsap.to(".circuit-overlay path", { duration: 12, strokeDashoffset: -120, repeat: -1, ease: "none" });
 
-        window.createAccount = async function() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        // Show spinner
+        function showSpinner() {
+            console.log("Showing spinner");
+            const spinnerOverlay = document.getElementById('spinner-overlay');
+            spinnerOverlay.style.display = 'flex';
+            gsap.to(spinnerOverlay, { duration: 0.5, opacity: 1, ease: "power2.out" });
+        }
+
+        // Hide spinner
+        function hideSpinner() {
+            console.log("Hiding spinner");
+            const spinnerOverlay = document.getElementById('spinner-overlay');
+            gsap.to(spinnerOverlay, { 
+                duration: 0.3, 
+                opacity: 0, 
+                ease: "power2.in", 
+                onComplete: () => {
+                    spinnerOverlay.style.display = 'none';
+                }
+            });
+        }
+
+        // Show alert
+        function showAlert(message, autoHide = true) {
+            console.log("Showing alert:", message);
             const alertModal = document.getElementById('custom-alert');
             const alertMessage = document.getElementById('alert-message');
-
-            if (!email || !password) {
-                alertMessage.textContent = 'Please enter both email and password.';
-                alertModal.style.display = 'flex';
-                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                return;
+            alertMessage.textContent = message;
+            alertModal.style.display = 'flex';
+            gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
+            if (autoHide) {
+                setTimeout(() => closeAlert(), 2000);
             }
+        }
 
-            // Check if email is approved
-            const registrationsRef = ref(database, 'registrations');
-            const emailQuery = query(registrationsRef, orderByChild('institutionEmail'), equalTo(email));
-            try {
-                const snapshot = await get(emailQuery);
-                if (snapshot.exists()) {
-                    const registration = Object.values(snapshot.val())[0];
-                    if (registration.status === 'approved') {
-                        // Create account
-                        try {
-                            await createUserWithEmailAndPassword(auth, email, password);
-                            alertMessage.textContent = 'Account created successfully! Redirecting to sign-in page...';
-                            alertModal.style.display = 'flex';
-                            gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                            setTimeout(() => {
-                                window.location.href = "signin.html";
-                            }, 3000);
-                        } catch (error) {
-                            alertMessage.textContent = `Error: ${error.message}. Please try again.`;
-                            alertModal.style.display = 'flex';
-                            gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                        }
-                    } else if (registration.status === 'pending') {
-                        alertMessage.textContent = 'Your registration is still pending approval. Please wait for admin approval.';
-                        alertModal.style.display = 'flex';
-                        gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                    } else {
-                        alertMessage.textContent = 'Your registration was rejected. Please contact support.';
-                        alertModal.style.display = 'flex';
-                        gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                    }
-                } else {
-                    alertMessage.textContent = 'No registration found for this email. Please register first.';
-                    alertModal.style.display = 'flex';
-                    gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                }
-            } catch (error) {
-                alertMessage.textContent = `Error: ${error.message}. Please try again.`;
-                alertModal.style.display = 'flex';
-                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-            }
-        };
-
+        // Close alert
         window.closeAlert = function() {
+            console.log("Closing alert");
             const alertModal = document.getElementById('custom-alert');
             gsap.to(".alert-content", { 
                 duration: 0.3, 
@@ -290,6 +304,72 @@
                     alertModal.style.display = 'none';
                 }
             });
+        };
+
+        // Create account function
+        window.createAccount = async function() {
+            const email = document.getElementById('personal-email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showAlert('Please enter both email and password.', false);
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters long.', false);
+                return;
+            }
+
+            try {
+                showSpinner();
+                // Check if personal email is approved
+                const registrationsRef = ref(database, 'registrations');
+                const emailQuery = query(registrationsRef, orderByChild('personalEmail'), equalTo(email));
+                const snapshot = await get(emailQuery);
+
+                if (snapshot.exists()) {
+                    const registration = Object.values(snapshot.val())[0];
+                    if (registration.status === 'approved') {
+                        // Create account with personal email
+                        try {
+                            await createUserWithEmailAndPassword(auth, email, password);
+                            hideSpinner();
+                            showAlert('Account created successfully! Redirecting to sign-in page...', true);
+                            setTimeout(() => {
+                                window.location.href = "signin.html";
+                            }, 1500);
+                        } catch (error) {
+                            hideSpinner();
+                            if (error.code === 'auth/email-already-in-use') {
+                                showAlert('This email is already registered. Please sign in.', false);
+                            } else if (error.code === 'auth/invalid-email') {
+                                showAlert('Invalid email format.', false);
+                            } else if (error.code === 'auth/weak-password') {
+                                showAlert('Password is too weak. Please use a stronger password.', false);
+                            } else {
+                                showAlert(`Error: ${error.message}`, false);
+                            }
+                        }
+                    } else if (registration.status === 'pending') {
+                        hideSpinner();
+                        showAlert('Your registration is still pending approval. Please wait for admin approval.', false);
+                    } else {
+                        hideSpinner();
+                        showAlert('Your registration was rejected. Please contact support.', false);
+                    }
+                } else {
+                    hideSpinner();
+                    showAlert('No registration found for this email. Please register first.', false);
+                }
+            } catch (error) {
+                hideSpinner();
+                if (error.code === 'PERMISSION_DENIED') {
+                    showAlert('You do not have permission to access registration data.', false);
+                } else {
+                    showAlert(`Error: ${error.message}`, false);
+                }
+            }
         };
     </script>
 </body>
