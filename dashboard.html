@@ -1,53 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Learner Dashboard - Rare Grade Devs</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Fira Code', monospace;
       background: linear-gradient(135deg, #020084, #0404d8);
-      color: #fff;
+      color: #f1f5f9;
       min-height: 100vh;
       margin: 0;
+      display: flex;
+    }
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(30, 64, 175, 0.9);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem;
+      border-right: 1px solid #93c5fd;
+      position: fixed;
+      height: 100%;
+      z-index: 10;
+      transition: transform 0.3s ease;
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 20;
+      background: #ffffff;
+      color: #020084;
+      border-radius: 9999px;
+      padding: 0.5rem;
+    }
+    .content {
+      margin-left: 250px;
       padding: 2rem;
+      flex-grow: 1;
+      position: relative;
+    }
+    .circuit-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.2;
+    }
+    .logo {
+      max-width: 150px;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      font-weight: 700;
+    }
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      color: #f1f5f9;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      display: block;
+      transition: background 0.3s ease;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(59, 130, 246, 0.2);
     }
     .card {
-      background: rgba(30, 64, 175, 0.8);
-      border-radius: 1rem;
+      background: rgba(30, 64, 175, 0.9);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
       padding: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2rem;
     }
-    .btn {
-      background: #fff;
+    .btn-glow {
+      position: relative;
+      overflow: hidden;
+      font-family: 'Fira Code', monospace;
+      background: #ffffff;
       color: #020084;
-      padding: 0.75rem 1.5rem;
       border-radius: 9999px;
-      font-weight: bold;
-      margin-top: 1rem;
+      font-weight: 600;
+      border: 1px solid #020084;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    .btn-glow::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .btn-glow:hover::after {
+      opacity: 1;
+    }
+    .btn-glow:hover {
+      background: #e5e7eb;
+    }
+    .alert-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 0, 132, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .alert-content {
+      background: rgba(30, 64, 175, 0.95);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-width: 90%;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid #93c5fd;
+      opacity: 0;
+    }
+    .alert-content p {
+      font-family: 'Fira Code', monospace;
+      color: #f1f5f9;
+      margin-bottom: 1rem;
+    }
+    .alert-close {
+      background: #ffffff;
+      color: #020084;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      border: 1px solid #020084;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .alert-close:hover {
+      background: #e5e7eb;
+    }
+    .spinner-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 0, 132, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid #93c5fd;
+      border-top: 6px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .forum-message {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #93c5fd;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      background: rgba(30, 64, 175, 0.5);
+      color: #f1f5f9;
+      transition: border-color 0.2s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    #calendar {
+      background: rgba(30, 64, 175, 0.9);
+      border-radius: 1.5rem;
+      padding: 1rem;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .content {
+        margin-left: 0;
+      }
+      .logo {
+        max-width: 100px;
+      }
+      .card {
+        padding: 1rem;
+      }
+      .btn-glow {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+      .alert-content {
+        width: 90%;
+        padding: 1rem;
+      }
+      .alert-content p {
+        font-size: 0.875rem;
+      }
+      .alert-close {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 4px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card text-center">
-    <h1 class="text-2xl font-bold mb-4">👋 Welcome, <span id="learnerName">Loading...</span></h1>
-    <p><strong>Course:</strong> <span id="courseType">-</span></p>
-    <p><strong>Status:</strong> <span id="status">-</span></p>
-    <p><strong>Institution:</strong> <span id="institution">-</span></p>
-    <button class="btn" onclick="logout()">Logout</button>
+  <div class="container">
+    <button class="sidebar-toggle btn-glow" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar" id="sidebar">
+      <img src="https://dashboard.raregradetech.com/uploads/company/b65f0e95c1b847586fb52cd9c734f19a.png" alt="Rare Grade Tech Logo" class="logo">
+      <ul>
+        <li><a href="#dashboard" class="active" onclick="showSection('dashboard')">Dashboard</a></li>
+        <li><a href="#lessons" onclick="showSection('lessons')">Lessons</a></li>
+        <li><a href="#forum" onclick="showSection('forum')">Forum</a></li>
+        <li><a href="#projects" onclick="showSection('projects')">Projects</a></li>
+        <li><a href="#calendar" onclick="showSection('calendar')">Calendar</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <svg class="circuit-overlay">
+        <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
+      </svg>
+      <div id="dashboard" class="section">
+        <div class="card text-center">
+          <h1 class="text-2xl font-bold mb-4">👋 Welcome, <span class="gradient-text" id="learnerName">Loading...</span></h1>
+          <p><strong>Course:</strong> <span id="courseType">-</span></p>
+          <p><strong>Status:</strong> <span id="status">-</span></p>
+          <p><strong>Institution:</strong> <span id="institution">-</span></p>
+        </div>
+      </div>
+      <div id="lessons" class="section hidden">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-4">Lessons</h2>
+          <div id="lessons-list"></div>
+        </div>
+      </div>
+      <div id="forum" class="section hidden">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-4">Forum</h2>
+          <div class="mb-4">
+            <textarea id="forum-message" class="form-input" placeholder="Type your message..." rows="4"></textarea>
+            <button class="btn-glow mt-2" onclick="postForumMessage()">Post Message</button>
+          </div>
+          <div id="forum-messages"></div>
+        </div>
+      </div>
+      <div id="projects" class="section hidden">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-4">Projects</h2>
+          <div id="projects-list"></div>
+        </div>
+      </div>
+      <div id="calendar" class="section hidden">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-4">Calendar</h2>
+          <div id="calendar-container"></div>
+        </div>
+      </div>
+    </div>
+    <div id="custom-alert" class="alert-modal">
+      <div class="alert-content">
+        <p id="alert-message"></p>
+        <button class="alert-close" onclick="closeAlert()">Close</button>
+      </div>
+    </div>
+    <div id="spinner-overlay" class="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getDatabase, ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    import { getDatabase, ref, get, query, orderByChild, equalTo, push, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
@@ -63,32 +362,288 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const email = user.email;
+    // GSAP Animations
+    gsap.from(".logo", { duration: 1, y: -50, opacity: 0, ease: "power3.out" });
+    gsap.from(".sidebar", { duration: 1, x: -50, opacity: 0, ease: "power3.out" });
+    gsap.from(".content", { duration: 1.2, scale: 0.9, opacity: 0, delay: 0.6, ease: "elastic.out(1, 0.6)" });
+    gsap.to(".circuit-overlay path", { duration: 12, strokeDashoffset: -120, repeat: -1, ease: "none" });
 
-        const q = query(ref(db, 'registrations'), orderByChild('personalEmail'), equalTo(email));
+    // Show spinner
+    function showSpinner() {
+      console.log("Showing spinner");
+      document.getElementById('spinner-overlay').style.display = 'flex';
+      gsap.to("#spinner-overlay", { duration: 0.5, opacity: 1, ease: "power2.out" });
+    }
+
+    // Hide spinner
+    function hideSpinner() {
+      console.log("Hiding spinner");
+      gsap.to("#spinner-overlay", { 
+        duration: 0.3, 
+        opacity: 0, 
+        ease: "power2.in", 
+        onComplete: () => {
+          document.getElementById('spinner-overlay').style.display = 'none';
+        }
+      });
+    }
+
+    // Show alert
+    function showAlert(message, autoHide = true) {
+      console.log("Showing alert:", message);
+      const alertModal = document.getElementById('custom-alert');
+      const alertMessage = document.getElementById('alert-message');
+      alertMessage.textContent = message;
+      alertModal.style.display = 'flex';
+      gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
+      if (autoHide) {
+        setTimeout(() => closeAlert(), 2000);
+      }
+    }
+
+    // Close alert
+    window.closeAlert = function() {
+      console.log("Closing alert");
+      const alertModal = document.getElementById('custom-alert');
+      gsap.to(".alert-content", { 
+        duration: 0.3, 
+        opacity: 0, 
+        ease: "power2.in", 
+        onComplete: () => {
+          alertModal.style.display = 'none';
+        }
+      });
+    };
+
+    // Toggle sidebar on mobile
+    window.toggleSidebar = function() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+      sidebar.classList.toggle('hidden');
+    };
+
+    // Show section
+    window.showSection = function(sectionId) {
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      document.getElementById(sectionId).classList.remove('hidden');
+      document.querySelectorAll('.sidebar a').forEach(a => {
+        a.classList.remove('active');
+      });
+      document.querySelector(`.sidebar a[href="#${sectionId}"]`).classList.add('active');
+      if (window.innerWidth <= 768) {
+        toggleSidebar();
+      }
+      if (sectionId === 'calendar') {
+        loadCalendar();
+      }
+    };
+
+    // Load dashboard data
+    async function loadDashboard(user) {
+      showSpinner();
+      try {
+        const q = query(ref(db, 'registrations'), orderByChild('personalEmail'), equalTo(user.email));
         const snap = await get(q);
-
         if (snap.exists()) {
           const data = Object.values(snap.val())[0];
-          document.getElementById('learnerName').textContent = data.name;
-          document.getElementById('courseType').textContent = data.course;
-          document.getElementById('status').textContent = data.status;
-          document.getElementById('institution').textContent = data.school;
+          document.getElementById('learnerName').textContent = data.name || 'Unknown';
+          document.getElementById('courseType').textContent = data.course || 'N/A';
+          document.getElementById('status').textContent = data.status || 'N/A';
+          document.getElementById('institution').textContent = data.school || 'N/A';
+          showAlert(`Welcome, ${data.name}!`, true);
         } else {
-          document.getElementById('learnerName').textContent = 'Unknown';
-          alert("No registration found. Please register.");
+          showAlert('No registration found for this email. Please register.', false);
+          setTimeout(() => window.location.href = "register.html", 3000);
         }
+      } catch (error) {
+        console.error("Error fetching registration:", error);
+        showAlert(error.code === 'PERMISSION_DENIED' ? 'You do not have permission to access registration data.' : `Error: ${error.message}`, false);
+      }
+      hideSpinner();
+    }
+
+    // Load lessons
+    async function loadLessons() {
+      showSpinner();
+      const lessonsList = document.getElementById('lessons-list');
+      lessonsList.innerHTML = '';
+      try {
+        const snap = await get(ref(db, 'lessons'));
+        if (snap.exists()) {
+          const lessons = snap.val();
+          Object.entries(lessons).forEach(([id, lesson]) => {
+            const lessonDiv = document.createElement('div');
+            lessonDiv.className = 'card mb-2';
+            lessonDiv.innerHTML = `
+              <h3 class="text-lg font-semibold">${lesson.title}</h3>
+              <p class="text-gray-300">${lesson.description}</p>
+              <a href="${lesson.contentUrl}" target="_blank" class="btn-glow mt-2 inline-block">View Lesson</a>
+            `;
+            lessonsList.appendChild(lessonDiv);
+            gsap.from(lessonDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
+          });
+        } else {
+          lessonsList.innerHTML = '<p class="text-gray-300">No lessons available.</p>';
+        }
+      } catch (error) {
+        console.error("Error fetching lessons:", error);
+        showAlert(`Error: ${error.message}`, false);
+      }
+      hideSpinner();
+    }
+
+    // Load forum messages
+    function loadForumMessages() {
+      showSpinner();
+      const messagesList = document.getElementById('forum-messages');
+      messagesList.innerHTML = '';
+      const messagesRef = ref(db, 'forum');
+      onValue(messagesRef, (snap) => {
+        messagesList.innerHTML = '';
+        if (snap.exists()) {
+          const messages = snap.val();
+          Object.entries(messages).forEach(([id, msg]) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'forum-message';
+            msgDiv.innerHTML = `
+              <p><strong>${msg.userName}</strong> (${msg.userEmail})</p>
+              <p>${msg.content}</p>
+              <p class="text-gray-400 text-sm">${new Date(msg.timestamp).toLocaleString()}</p>
+            `;
+            messagesList.appendChild(msgDiv);
+            gsap.from(msgDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
+          });
+        } else {
+          messagesList.innerHTML = '<p class="text-gray-300">No messages yet.</p>';
+        }
+        hideSpinner();
+      }, (error) => {
+        console.error("Error fetching forum messages:", error);
+        showAlert(`Error: ${error.message}`, false);
+        hideSpinner();
+      });
+    }
+
+    // Post forum message
+    window.postForumMessage = async function() {
+      const message = document.getElementById('forum-message').value.trim();
+      if (!message) {
+        showAlert('Please enter a message.', false);
+        return;
+      }
+      showSpinner();
+      try {
+        const user = auth.currentUser;
+        await push(ref(db, 'forum'), {
+          userEmail: user.email,
+          userName: document.getElementById('learnerName').textContent,
+          content: message,
+          timestamp: Date.now()
+        });
+        document.getElementById('forum-message').value = '';
+        showAlert('Message posted successfully.', true);
+      } catch (error) {
+        console.error("Error posting message:", error);
+        showAlert(`Error: ${error.message}`, false);
+      }
+      hideSpinner();
+    };
+
+    // Load projects
+    async function loadProjects(user) {
+      showSpinner();
+      const projectsList = document.getElementById('projects-list');
+      projectsList.innerHTML = '';
+      try {
+        const q = query(ref(db, 'projects'), orderByChild('userEmail'), equalTo(user.email));
+        const snap = await get(q);
+        if (snap.exists()) {
+          const projects = snap.val();
+          Object.entries(projects).forEach(([id, project]) => {
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'card mb-2';
+            projectDiv.innerHTML = `
+              <h3 class="text-lg font-semibold">${project.title}</h3>
+              <p class="text-gray-300">${project.description}</p>
+              <p><strong>Due Date:</strong> ${project.dueDate}</p>
+              <p><strong>Status:</strong> ${project.status}</p>
+            `;
+            projectsList.appendChild(projectDiv);
+            gsap.from(projectDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
+          });
+        } else {
+          projectsList.innerHTML = '<p class="text-gray-300">No projects assigned.</p>';
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        showAlert(`Error: ${error.message}`, false);
+      }
+      hideSpinner();
+    }
+
+    // Load calendar
+    function loadCalendar() {
+      showSpinner();
+      const calendarEl = document.getElementById('calendar-container');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: async (fetchInfo, successCallback, failureCallback) => {
+          try {
+            const q = query(ref(db, 'calendar'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
+            const snap = await get(q);
+            const events = [];
+            if (snap.exists()) {
+              Object.values(snap.val()).forEach(event => {
+                events.push({
+                  title: event.title,
+                  start: event.date,
+                  extendedProps: { type: event.type }
+                });
+              });
+            }
+            successCallback(events);
+          } catch (error) {
+            console.error("Error fetching calendar events:", error);
+            showAlert(`Error: ${error.message}`, false);
+            failureCallback(error);
+          }
+          hideSpinner();
+        },
+        eventClick: function(info) {
+          showAlert(`${info.event.title} (${info.event.extendedProps.type}) on ${info.event.start.toLocaleDateString()}`, false);
+        }
+      });
+      calendar.render();
+    }
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await loadDashboard(user);
+        loadLessons();
+        loadForumMessages();
+        loadProjects(user);
       } else {
-        window.location.href = "login.html";
+        showSpinner();
+        showAlert('You are not logged in. Redirecting to login...', true);
+        setTimeout(() => window.location.href = "login.html", 1500);
       }
     });
 
-    window.logout = function () {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
+    // Logout function
+    window.logout = async function() {
+      try {
+        showSpinner();
+        await signOut(auth);
+        showAlert('Logged out successfully.', true);
+        setTimeout(() => window.location.href = "login.html", 1500);
+      } catch (error) {
+        console.error("Logout error:", error);
+        showAlert(`Error: ${error.message}`, false);
+        hideSpinner();
+      }
     };
   </script>
 </body>
