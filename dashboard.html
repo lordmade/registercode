@@ -14,8 +14,8 @@
   <style>
     body {
       font-family: 'Fira Code', monospace;
-      background: linear-gradient(135deg, #020084, #0404d8);
-      color: #f1f5f9;
+      background: #ffffff;
+      color: #1e293b;
       min-height: 100vh;
       margin: 0;
       display: flex;
@@ -29,8 +29,7 @@
     }
     .sidebar {
       width: 250px;
-      background: rgba(30, 64, 175, 0.9);
-      backdrop-filter: blur(12px);
+      background: #1e40af;
       padding: 1.5rem;
       border-right: 1px solid #93c5fd;
       position: fixed;
@@ -47,8 +46,8 @@
       top: 1rem;
       left: 1rem;
       z-index: 20;
-      background: #ffffff;
-      color: #020084;
+      background: #1e40af;
+      color: #ffffff;
       border-radius: 9999px;
       padding: 0.5rem;
     }
@@ -101,25 +100,43 @@
       transition: background 0.3s ease;
     }
     .sidebar a:hover, .sidebar a.active {
-      background: rgba(59, 130, 246, 0.2);
+      background: rgba(59, 130, 246, 0.3);
     }
     .card {
-      background: rgba(30, 64, 175, 0.9);
-      backdrop-filter: blur(12px);
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
       border-radius: 1.5rem;
       padding: 2rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       margin-bottom: 2rem;
+    }
+    .stats-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    .stats-card h3 {
+      color: #1e40af;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .stats-card p {
+      color: #1e293b;
+      font-size: 1.5rem;
+      font-weight: 700;
     }
     .btn-glow {
       position: relative;
       overflow: hidden;
       font-family: 'Fira Code', monospace;
-      background: #ffffff;
-      color: #020084;
+      background: #1e40af;
+      color: #ffffff;
       border-radius: 9999px;
       font-weight: 600;
-      border: 1px solid #020084;
+      border: 1px solid #1e40af;
       padding: 0.5rem 1rem;
       cursor: pointer;
     }
@@ -130,7 +147,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
       opacity: 0;
       transition: opacity 0.5s ease;
     }
@@ -138,7 +155,7 @@
       opacity: 1;
     }
     .btn-glow:hover {
-      background: #e5e7eb;
+      background: #2563eb;
     }
     .alert-modal {
       display: none;
@@ -147,41 +164,40 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 0, 132, 0.8);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
     .alert-content {
-      background: rgba(30, 64, 175, 0.95);
+      background: #f1f5f9;
       border-radius: 1rem;
       padding: 1.5rem;
       max-width: 90%;
       width: 400px;
       text-align: center;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      border: 1px solid #93c5fd;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid #e2e8f0;
       opacity: 0;
     }
     .alert-content p {
       font-family: 'Fira Code', monospace;
-      color: #f1f5f9;
+      color: #1e293b;
       margin-bottom: 1rem;
     }
     .alert-close {
-      background: #ffffff;
-      color: #020084;
+      background: #1e40af;
+      color: #ffffff;
       border-radius: 9999px;
       padding: 0.5rem 1rem;
       font-family: 'Fira Code', monospace;
       font-weight: 600;
-      border: 1px solid #020084;
+      border: 1px solid #1e40af;
       cursor: pointer;
       transition: background 0.3s ease;
     }
     .alert-close:hover {
-      background: #e5e7eb;
+      background: #2563eb;
     }
     .spinner-overlay {
       display: none;
@@ -190,8 +206,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 0, 132, 0.8);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       align-items: center;
       justify-content: center;
@@ -200,7 +215,7 @@
       width: 60px;
       height: 60px;
       border: 6px solid #93c5fd;
-      border-top: 6px solid #3b82f6;
+      border-top: 6px solid #1e40af;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -209,8 +224,8 @@
       100% { transform: rotate(360deg); }
     }
     .forum-message {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid #93c5fd;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
       border-radius: 0.75rem;
       padding: 1rem;
       margin-bottom: 1rem;
@@ -218,19 +233,19 @@
     .form-input {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid #93c5fd;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-family: 'Fira Code', monospace;
-      background: rgba(30, 64, 175, 0.5);
-      color: #f1f5f9;
+      background: #ffffff;
+      color: #1e293b;
       transition: border-color 0.2s ease;
     }
     .form-input:focus {
       outline: none;
-      border-color: #3b82f6;
+      border-color: #1e40af;
     }
     #calendar {
-      background: rgba(30, 64, 175, 0.9);
+      background: #f1f5f9;
       border-radius: 1.5rem;
       padding: 1rem;
     }
@@ -251,7 +266,7 @@
       .logo {
         max-width: 100px;
       }
-      .card {
+      .card, .stats-card {
         padding: 1rem;
       }
       .btn-glow {
@@ -275,6 +290,13 @@
         border-width: 4px;
       }
     }
+    @media (min-width: 640px) {
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -293,7 +315,7 @@
     </div>
     <div class="content">
       <svg class="circuit-overlay">
-        <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
+        <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#1e40af" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
       </svg>
       <div id="dashboard" class="section">
         <div class="card text-center">
@@ -301,6 +323,20 @@
           <p><strong>Course:</strong> <span id="courseType">-</span></p>
           <p><strong>Status:</strong> <span id="status">-</span></p>
           <p><strong>Institution:</strong> <span id="institution">-</span></p>
+        </div>
+        <div class="stats-container">
+          <div class="stats-card">
+            <h3>Uploaded Projects</h3>
+            <p id="projects-count">0</p>
+          </div>
+          <div class="stats-card">
+            <h3>Available Lessons</h3>
+            <p id="lessons-count">0</p>
+          </div>
+          <div class="stats-card">
+            <h3>Calendar Due Dates</h3>
+            <p id="due-dates-count">0</p>
+          </div>
         </div>
       </div>
       <div id="lessons" class="section hidden">
@@ -444,6 +480,7 @@
     async function loadDashboard(user) {
       showSpinner();
       try {
+        // Fetch registration data
         const q = query(ref(db, 'registrations'), orderByChild('personalEmail'), equalTo(user.email));
         const snap = await get(q);
         if (snap.exists()) {
@@ -454,8 +491,36 @@
           document.getElementById('institution').textContent = data.school || 'N/A';
           showAlert(`Welcome, ${data.name}!`, true);
         } else {
-          showAlert('No registration found for this email. Please register.', false);
+          showAlert('No registration found for this email. Please create an account.', false);
           setTimeout(() => window.location.href = "create-account.html", 3000);
+          hideSpinner();
+          return;
+        }
+
+        // Fetch stats
+        try {
+          // Projects count
+          const projectsQuery = query(ref(db, 'projects'), orderByChild('userEmail'), equalTo(user.email));
+          const projectsSnap = await get(projectsQuery);
+          const projectsCount = projectsSnap.exists() ? Object.keys(projectsSnap.val()).length : 0;
+          document.getElementById('projects-count').textContent = projectsCount;
+
+          // Lessons count
+          const lessonsSnap = await get(ref(db, 'lessons'));
+          const lessonsCount = lessonsSnap.exists() ? Object.keys(lessonsSnap.val()).length : 0;
+          document.getElementById('lessons-count').textContent = lessonsCount;
+
+          // Calendar due dates count
+          const calendarQuery = query(ref(db, 'calendar'), orderByChild('userEmail'), equalTo(user.email));
+          const calendarSnap = await get(calendarQuery);
+          const dueDatesCount = calendarSnap.exists() ? Object.keys(calendarSnap.val()).length : 0;
+          document.getElementById('due-dates-count').textContent = dueDatesCount;
+
+          // Animate stats cards
+          gsap.from(".stats-card", { duration: 0.5, opacity: 0, y: 20, stagger: 0.1, ease: "power2.out" });
+        } catch (error) {
+          console.error("Error fetching stats:", error);
+          showAlert(`Error fetching stats: ${error.message}`, false);
         }
       } catch (error) {
         console.error("Error fetching registration:", error);
@@ -478,14 +543,14 @@
             lessonDiv.className = 'card mb-2';
             lessonDiv.innerHTML = `
               <h3 class="text-lg font-semibold">${lesson.title}</h3>
-              <p class="text-gray-300">${lesson.description}</p>
+              <p class="text-gray-600">${lesson.description}</p>
               <a href="${lesson.contentUrl}" target="_blank" class="btn-glow mt-2 inline-block">View Lesson</a>
             `;
             lessonsList.appendChild(lessonDiv);
             gsap.from(lessonDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
           });
         } else {
-          lessonsList.innerHTML = '<p class="text-gray-300">No lessons available.</p>';
+          lessonsList.innerHTML = '<p class="text-gray-600">No lessons available.</p>';
         }
       } catch (error) {
         console.error("Error fetching lessons:", error);
@@ -510,13 +575,13 @@
             msgDiv.innerHTML = `
               <p><strong>${msg.userName}</strong> (${msg.userEmail})</p>
               <p>${msg.content}</p>
-              <p class="text-gray-400 text-sm">${new Date(msg.timestamp).toLocaleString()}</p>
+              <p class="text-gray-500 text-sm">${new Date(msg.timestamp).toLocaleString()}</p>
             `;
             messagesList.appendChild(msgDiv);
             gsap.from(msgDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
           });
         } else {
-          messagesList.innerHTML = '<p class="text-gray-300">No messages yet.</p>';
+          messagesList.innerHTML = '<p class="text-gray-600">No messages yet.</p>';
         }
         hideSpinner();
       }, (error) => {
@@ -566,7 +631,7 @@
             projectDiv.className = 'card mb-2';
             projectDiv.innerHTML = `
               <h3 class="text-lg font-semibold">${project.title}</h3>
-              <p class="text-gray-300">${project.description}</p>
+              <p class="text-gray-600">${project.description}</p>
               <p><strong>Due Date:</strong> ${project.dueDate}</p>
               <p><strong>Status:</strong> ${project.status}</p>
             `;
@@ -574,7 +639,7 @@
             gsap.from(projectDiv, { duration: 0.5, opacity: 0, y: 20, ease: "power2.out" });
           });
         } else {
-          projectsList.innerHTML = '<p class="text-gray-300">No projects assigned.</p>';
+          projectsList.innerHTML = '<p class="text-gray-600">No projects assigned.</p>';
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
