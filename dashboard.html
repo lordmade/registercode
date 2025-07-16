@@ -638,7 +638,7 @@
         showSpinner();
         await signOut(auth);
         showAlert('Logged out successfully.', true);
-        setTimeout(() => window.location.href = "login.html", 1500);
+        setTimeout(() => window.location.href = "signin.html", 1500);
       } catch (error) {
         console.error("Logout error:", error);
         showAlert(`Error: ${error.message}`, false);
