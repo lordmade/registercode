@@ -1,345 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Rare Grade Devs - Learn Coding & Hardware</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #020084, #0404d8);
-            color: #f1f5f9;
-            font-family: 'Fira Code', 'Inter', monospace;
-            overflow-x: hidden;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 1rem;
-            width: 100%;
-        }
-        .hero-content {
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            width: 100%;
-            text-align: center;
-        }
-        .floating {
-            animation: float 5s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        .register-form {
-            background: rgba(30, 64, 175, 0.9);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            width: 100%;
-            max-width: 450px;
-            z-index: 10;
-        }
-        .circuit-overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.2;
-        }
-        .input-field {
-            transition: border-color 0.3s ease, transform 0.3s ease;
-            font-family: 'Fira Code', monospace;
-            margin-bottom: 1rem;
-        }
-        .input-field:focus {
-            transform: scale(1.02);
-            border-color: #93c5fd !important;
-        }
-        .btn-glow {
-            position: relative;
-            overflow: hidden;
-            font-family: 'Fira Code', monospace;
-            background: #ffffff;
-            color: #020084;
-            border-radius: 9999px;
-            font-weight: 600;
-            border: 1px solid #020084;
-            z-index: 10;
-            margin-bottom: 1rem;
-        }
-        .btn-glow::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .btn-glow:hover::after {
-            opacity: 1;
-        }
-        .btn-glow:hover {
-            background: #e5e7eb;
-            color: #020084;
-        }
-        .gradient-text {
-            background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-        }
-        @keyframes shine {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        .hero h1 {
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-        }
-        .hero p, .register-form h2, .features-section h3, .features-section p {
-            font-family: 'Fira Code', monospace;
-            font-weight: 400;
-        }
-        .logo {
-            max-width: 150px;
-            width: 100%;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 5;
-        }
-        .smoke-background {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 20%, transparent 70%);
-            z-index: 4;
-            animation: smoke 8s ease-in-out infinite;
-            border-radius: 50%;
-        }
-        .smoke-background::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 60%);
-            animation: smoke2 10s ease-in-out infinite;
-            animation-delay: 2s;
-        }
-        @keyframes smoke {
-            0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.7; }
-            50% { transform: scale(1.2) translate(-10px, 10px); opacity: 0.4; }
-        }
-        @keyframes smoke2 {
-            0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.5; }
-            50% { transform: scale(1.3) translate(10px, -10px); opacity: 0.3; }
-        }
-        .card-icon {
-            max-width: 50px;
-            width: 100%;
-            margin: 0 auto 1rem;
-        }
-        .alert-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(2, 0, 132, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .alert-content {
-            background: rgba(30, 64, 175, 0.95);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            max-width: 90%;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            border: 1px solid #93c5fd;
-            opacity: 0;
-        }
-        .alert-content p {
-            font-family: 'Fira Code', monospace;
-            color: #f1f5f9;
-            margin-bottom: 1rem;
-        }
-        .alert-close {
-            background: #ffffff;
-            color: #020084;
-            border-radius: 9999px;
-            padding: 0.5rem 1rem;
-            font-family: 'Fira Code', monospace;
-            font-weight: 600;
-            border: 1px solid #020084;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .alert-close:hover {
-            background: #e5e7eb;
-        }
-        @media (max-width: 640px) {
-            .hero {
-                padding: 1rem;
-                min-height: 80vh;
-            }
-            .hero-content {
-                gap: 1rem;
-            }
-            .register-form {
-                padding: 1rem;
-                max-width: 90%;
-            }
-            .register-form h2 {
-                font-size: 1.25rem;
-            }
-            .input-field, .btn-glow {
-                font-size: 0.875rem;
-                padding: 0.75rem;
-                margin-bottom: 0.75rem;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .hero p {
-                font-size: 0.875rem;
-                max-width: 90%;
-            }
-            .features-section {
-                padding: 2rem 1rem;
-            }
-            .features-section .grid {
-                gap: 1rem;
-            }
-            .features-section .p-6 {
-                padding: 1.5rem;
-            }
-            .alert-content {
-                width: 90%;
-                padding: 1rem;
-            }
-            .alert-content p {
-                font-size: 0.875rem;
-            }
-            .alert-close {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
-            }
-            .logo {
-                max-width: 100px;
-            }
-            .smoke-background {
-                width: 150px;
-                height: 150px;
-            }
-            .card-icon {
-                max-width: 40px;
-                margin-bottom: 0.75rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rare Grade Devs - Splash</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #3b82f6;
+      --text-dark: #f1f5f9;
+      --text-light: #d1d5db;
+      --border: #93c5fd;
+      --background: rgba(30, 64, 175, 0.9);
+    }
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      touch-action: manipulation;
+    }
+    body {
+      font-family: 'Fira Code', monospace;
+      background: linear-gradient(135deg, #020084, #0404d8);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: opacity 0.5s ease;
+    }
+    body.fade-out {
+      opacity: 0;
+    }
+    .splash-container {
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    .logo-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+    .chaxo-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+    }
+    .loader-circle {
+      stroke: #93c5fd;
+      stroke-width: 6;
+      fill: none;
+      stroke-linecap: round;
+      transform-origin: center;
+      animation: rotate 1.5s linear infinite;
+    }
+    .loader-path {
+      stroke: url(#gradient);
+      stroke-width: 6;
+      fill: none;
+      stroke-linecap: round;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+    .circuit-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.2;
+    }
+    .splash-text {
+      color: #f1f5f9;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .custom-alert {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(30, 64, 175, 0.95);
+      padding: 1.5rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid #93c5fd;
+      z-index: 1000;
+      color: #f1f5f9;
+      font-weight: 500;
+      text-align: center;
+      max-width: 90%;
+      width: 400px;
+    }
+    .custom-alert.active {
+      display: block;
+    }
+    .custom-alert .close-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 24px;
+      height: 24px;
+      background: none;
+      border: none;
+      color: #f1f5f9;
+      cursor: pointer;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .custom-alert .close-btn:hover {
+      transform: scale(1.2);
+      color: #93c5fd;
+    }
+    .custom-alert .close-btn svg {
+      width: 100%;
+      height: 100%;
+    }
+    .custom-alert .retry-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      color: #020084;
+      border: 1px solid #020084;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-family: 'Fira Code', monospace;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .custom-alert .retry-btn:hover {
+      background: #e5e7eb;
+      transform: scale(1.05);
+    }
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes dash {
+      0% { stroke-dasharray: 188.5; stroke-dashoffset: 188.5; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dasharray: 188.5; stroke-dashoffset: -188.5; }
+    }
+    @media (max-width: 640px) {
+      .logo-container {
+        width: 100px;
+        height: 100px;
+      }
+      .loader {
+        width: 80px;
+        height: 80px;
+      }
+      .splash-text {
+        font-size: 1.25rem;
+      }
+      .custom-alert {
+        width: 90%;
+        padding: 1rem;
+      }
+      .custom-alert .retry-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <section class="hero">
-        <svg class="circuit-overlay">
-            <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
-        </svg>
-        <div class="hero-content">
-            <div class="text-center relative">
-                <div class="smoke-background"></div>
-                <img src="https://dashboard.raregradetech.com/uploads/company/b65f0e95c1b847586fb52cd9c734f19a.png" alt="Rare Grade Tech Logo" class="logo">
-                <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mb-4 floating">
-                    Rare Grade <span class="gradient-text">Devs</span> - Programme
-                </h1>
-                <p class="text-base sm:text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-                    Empowering tertiary learners to master software coding and hardware through cutting-edge Programming Languages and real-world projects.
-                </p>
-            </div>
-            <div class="register-form">
-                <h2 class="text-xl sm:text-2xl font-semibold text-white mb-6 text-center">Join the Future of Tech</h2>
-                <div class="space-y-4">
-                    <input type="text" id="name" placeholder="Full Name" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                    <input type="email" id="instEmail" placeholder="Institution Email" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                    <input type="email" id="personalEmail" placeholder="Your Personal Email" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                    <input type="text" id="school" placeholder="Tertiary Institution Name" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                    <input type="text" id="location" placeholder="City, Country" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                    <select id="course" class="input-field w-full p-3 rounded-lg bg-blue-900/50 text-white border border-blue-700 focus:outline-none focus:border-blue-300">
-                        <option value="" disabled selected>Select Course</option>
-                        <option value="software">Software Coding</option>
-                        <option value="hardware">Hardware</option>
-                        <option value="both">Both</option>
-                    </select>
-                    <button onclick="register()" class="btn-glow w-full p-3 rounded-lg font-semibold">Start Your Journey</button>
-                </div>
-            </div>
-        </div>
-    </section>
-    <div id="custom-alert" class="alert-modal">
-        <div class="alert-content">
-            <p id="alert-message"></p>
-            <button class="alert-close" onclick="closeAlert()">Close</button>
-        </div>
+  <svg class="circuit-overlay">
+    <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
+  </svg>
+  <div class="splash-container">
+    <div class="logo-container">
+      <img src="https://dashboard.raregradetech.com/uploads/company/b65f0e95c1b847586fb52cd9c734f19a.png" alt="Rare Grade Tech Logo" class="chaxo-logo" />
+      <svg class="loader" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0.8" />
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="50" class="loader-circle" />
+        <path d="M 10 60 A 50 50 0 0 1 110 60" class="loader-path" />
+      </svg>
     </div>
-    <section class="features-section py-12 sm:py-16 bg-blue-950/50 w-full">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4 sm:px-6">
-            <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
-                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
-                    <path d="M50 20 C30 20, 20 30, 20 50 C20 70, 30 80, 50 80 C70 80, 80 70, 80 50 C80 30, 70 20, 50 20" stroke-linecap="round"/>
-                    <path d="M50 40 V60 M40 50 H60" stroke-linecap="round"/>
-                </svg>
-                <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Industry-Leading Mentors</h3>
-                <p class="text-gray-300 text-sm sm:text-base">Learn from experts shaping the tech world in software and hardware.</p>
-            </div>
-            <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
-                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
-                    <path d="M20 30 H80 V70 H20 Z" stroke-linecap="round"/>
-                    <path d="M30 25 V30 H70 V25" stroke-linecap="round"/>
-                </svg>
-                <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Practical Projects</h3>
-                <p class="text-gray-300 text-sm sm:text-base">Build apps and hardware prototypes to boost your portfolio.</p>
-            </div>
-            <div class="p-6 sm:p-8 bg-blue-900/30 rounded-xl text-center transform hover:scale-105 transition">
-                <svg class="card-icon" viewBox="0 0 100 100" fill="none" stroke="#93c5fd" stroke-width="4">
-                    <path d="M50 20 L65 40 H35 Z M50 40 V80" stroke-linecap="round"/>
-                </svg>
-                <h3 class="text-lg sm:text-xl font-bold text-white mb-3">Competitive Challenges</h3>
-                <p class="text-gray-300 text-sm sm:text-base">Compete in coding sprints and hackathons to stand out.</p>
-            </div>
-        </div>
-    </section>
-    <script>
-        // Firebase Configuration
-         const firebaseConfig = {
+    <p class="splash-text text-xl md:text-2xl mt-6">Welcome to <span class="gradient-text">Rare Grade Devs</span></p>
+  </div>
+  <div id="custom-alert" class="custom-alert">
+    <button class="close-btn" onclick="hideAlert()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <p id="alert-message">An error occurred. Please try again later.</p>
+    <button class="retry-btn" onclick="retryAuth()">Retry</button>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    const firebaseConfig = {
       apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
       authDomain: "fire-b-a8878.firebaseapp.com",
       databaseURL: "https://fire-b-a8878.firebaseio.com",
@@ -349,109 +241,93 @@
       appId: "1:658673187627:web:6e4c29af661785f0afa36e"
     };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-        // GSAP Animations
-        gsap.from(".hero h1", { duration: 1, y: -60, opacity: 0, ease: "power3.out" });
-        gsap.from(".hero p", { duration: 1, y: 60, opacity: 0, delay: 0.3, ease: "power3.out" });
-        gsap.from(".register-form", { duration: 1.2, scale: 0.9, opacity: 0, delay: 0.6, ease: "elastic.out(1, 0.6)" });
-        gsap.from(".register-form input, .register-form select, .register-form button", { 
-            duration: 0.8, 
-            y: 20, 
-            opacity: 0, 
-            stagger: 0.1, 
-            delay: 1, 
-            ease: "power2.out" 
-        });
-        gsap.from(".logo", { duration: 1, y: -50, opacity: 0, delay: 0.2, ease: "power3.out" });
-        gsap.from(".smoke-background", { duration: 1.5, opacity: 0, scale: 0.8, delay: 0.4, ease: "power2.out" });
-        gsap.from(".card-icon", { duration: 1, opacity: 0, scale: 0.5, stagger: 0.2, delay: 1.2, ease: "elastic.out(1, 0.6)" });
-        gsap.to(".circuit-overlay path", { 
-            duration: 12, 
-            strokeDashoffset: -120, 
-            repeat: -1, 
-            ease: "none" 
-        });
+    const customAlert = document.getElementById("custom-alert");
+    const alertMessage = document.getElementById("alert-message");
 
-        // Registration Function
-        function register() {
-            const name = document.getElementById('name').value;
-            const instEmail = document.getElementById('instEmail').value;
-            const personalEmail = document.getElementById('personalEmail').value;
-            const school = document.getElementById('school').value;
-            const location = document.getElementById('location').value;
-            const course = document.getElementById('course').value;
-            const alertModal = document.getElementById('custom-alert');
-            const alertMessage = document.getElementById('alert-message');
+    // GSAP Animations
+    gsap.from(".chaxo-logo", { duration: 1.2, opacity: 0, scale: 0.7, ease: "power3.out" });
+    gsap.from(".splash-text", { duration: 1, opacity: 0, y: 20, delay: 0.5, ease: "power3.out" });
+    gsap.from(".loader", { duration: 1, opacity: 0, scale: 0.8, delay: 0.3, ease: "power2.out" });
+    gsap.to(".circuit-overlay path", { duration: 12, strokeDashoffset: -120, repeat: -1, ease: "none" });
+    gsap.from(".custom-alert.active", { duration: 0.3, opacity: 0, ease: "power2.out" });
 
-            // Basic email validation for institutional email
-            const emailRegex = /^[\w-.]+@([\w-]+\.)+[edu]{3}$/;
-            if (!emailRegex.test(instEmail)) {
-                alertMessage.textContent = 'Please enter a valid institution email address (e.g., student@university.edu).';
-                alertModal.style.display = 'flex';
-                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                return;
-            }
+    function showAlert(message, autoHide = true) {
+      alertMessage.textContent = message;
+      customAlert.classList.add("active");
+      if (autoHide) {
+        setTimeout(hideAlert, 5000);
+      }
+    }
 
-            // Basic validation for personal email
-            const personalEmailRegex = /^[\w-.]+@([\w-]+\.)+[a-zA-Z]{2,}$/;
-            if (!personalEmailRegex.test(personalEmail)) {
-                alertMessage.textContent = 'Please enter a valid personal email address.';
-                alertModal.style.display = 'flex';
-                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                return;
-            }
-
-            if (name && instEmail && personalEmail && school && location && course) {
-                // Save to Firebase Realtime Database
-                const registrationRef = database.ref('registrations').push();
-                registrationRef.set({
-                    name: name,
-                    institutionEmail: instEmail,
-                    personalEmail: personalEmail,
-                    school: school,
-                    location: location,
-                    course: course,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                })
-                .then(() => {
-                    alertMessage.textContent = `Welcome, ${name}! You've registered for ${course} course(s) from ${school}, ${location}. Check your email (${instEmail}) for confirmation.`;
-                    alertModal.style.display = 'flex';
-                    gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                    // Reset form
-                    document.getElementById('name').value = '';
-                    document.getElementById('instEmail').value = '';
-                    document.getElementById('personalEmail').value = '';
-                    document.getElementById('school').value = '';
-                    document.getElementById('location').value = '';
-                    document.getElementById('course').value = '';
-                })
-                .catch((error) => {
-                    alertMessage.textContent = `Error: ${error.message}. Please try again.`;
-                    alertModal.style.display = 'flex';
-                    gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                });
-            } else {
-                alertMessage.textContent = 'Please fill in all fields.';
-                alertModal.style.display = 'flex';
-                gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-            }
+    function hideAlert() {
+      gsap.to(".custom-alert", { 
+        duration: 0.3, 
+        opacity: 0, 
+        ease: "power2.in", 
+        onComplete: () => {
+          customAlert.classList.remove("active");
         }
+      });
+    }
 
-        // Close Alert Function
-        function closeAlert() {
-            const alertModal = document.getElementById('custom-alert');
-            gsap.to(".alert-content", { 
-                duration: 0.3, 
-                opacity: 0, 
-                ease: "power2.in", 
-                onComplete: () => {
-                    alertModal.style.display = 'none';
+    async function checkAuthState(retries = 3, delay = 1000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          await new Promise((resolve, reject) => {
+            onAuthStateChanged(auth, async (user) => {
+              try {
+                if (user) {
+                  const userRef = ref(db, `users/${user.uid}`);
+                  const snapshot = await get(userRef);
+                  const destination = snapshot.exists() ? "home.html" : "signup.html";
+                  document.body.classList.add("fade-out");
+                  setTimeout(() => {
+                    window.location.href = destination;
+                  }, 1500);
+                  resolve();
+                } else {
+                  document.body.classList.add("fade-out");
+                  setTimeout(() => {
+                    window.location.href = "signup.html";
+                  }, 1500);
+                  resolve();
                 }
-            });
+              } catch (error) {
+                reject(error);
+              }
+            }, reject);
+          });
+          return;
+        } catch (error) {
+          console.error(`Auth attempt ${attempt} failed:`, error);
+          if (attempt === retries) {
+            let message = "Failed to connect to server. Please check your connection and try again.";
+            if (error.code === "permission-denied") {
+              message = "Permission denied. Please contact support.";
+            } else if (error.code === "unavailable") {
+              message = "Server is temporarily unavailable. Please try again later.";
+            }
+            showAlert(message, false);
+          } else {
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
         }
-    </script>
+      }
+    }
+
+    function retryAuth() {
+      hideAlert();
+      checkAuthState();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuthState();
+    });
+  </script>
 </body>
 </html>
