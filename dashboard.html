@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learner Dashboard - Rare Grade Devs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: 'Fira Code', monospace;
+      background: linear-gradient(135deg, #020084, #0404d8);
+      color: #fff;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+    }
+    .card {
+      background: rgba(30, 64, 175, 0.8);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    .btn {
+      background: #fff;
+      color: #020084;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card text-center">
+    <h1 class="text-2xl font-bold mb-4">👋 Welcome, <span id="learnerName">Loading...</span></h1>
+    <p><strong>Course:</strong> <span id="courseType">-</span></p>
+    <p><strong>Status:</strong> <span id="status">-</span></p>
+    <p><strong>Institution:</strong> <span id="institution">-</span></p>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getDatabase, ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
+      authDomain: "fire-b-a8878.firebaseapp.com",
+      databaseURL: "https://fire-b-a8878.firebaseio.com",
+      projectId: "fire-b-a8878",
+      storageBucket: "fire-b-a8878.appspot.com",
+      messagingSenderId: "658673187627",
+      appId: "1:658673187627:web:6e4c29af661785f0afa36e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const email = user.email;
+
+        const q = query(ref(db, 'registrations'), orderByChild('personalEmail'), equalTo(email));
+        const snap = await get(q);
+
+        if (snap.exists()) {
+          const data = Object.values(snap.val())[0];
+          document.getElementById('learnerName').textContent = data.name;
+          document.getElementById('courseType').textContent = data.course;
+          document.getElementById('status').textContent = data.status;
+          document.getElementById('institution').textContent = data.school;
+        } else {
+          document.getElementById('learnerName').textContent = 'Unknown';
+          alert("No registration found. Please register.");
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    };
+  </script>
+</body>
+</html>
