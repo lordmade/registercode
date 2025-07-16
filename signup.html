@@ -6,8 +6,9 @@
     <title>Rare Grade Devs - Learn Coding & Hardware</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -86,6 +87,7 @@
             border: 1px solid #020084;
             z-index: 10;
             margin-bottom: 1rem;
+            padding: 0.75rem 1.5rem;
         }
         .btn-glow::after {
             content: '';
@@ -299,7 +301,7 @@
                         <option value="hardware">Hardware</option>
                         <option value="both">Both</option>
                     </select>
-                    <button onclick="register()" class="btn-glow w-full p-3 rounded-lg font-semibold">Start Your Journey</button>
+                    <button onclick="register()" class="btn-glow w-full p-3 rounded-lg font-semibold">Submit for Approval</button>
                 </div>
             </div>
         </div>
@@ -337,21 +339,26 @@
             </div>
         </div>
     </section>
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
         // Firebase Configuration
-         const firebaseConfig = {
-      apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
-      authDomain: "fire-b-a8878.firebaseapp.com",
-      databaseURL: "https://fire-b-a8878.firebaseio.com",
-      projectId: "fire-b-a8878",
-      storageBucket: "fire-b-a8878.appspot.com",
-      messagingSenderId: "658673187627",
-      appId: "1:658673187627:web:6e4c29af661785f0afa36e"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
+            authDomain: "fire-b-a8878.firebaseapp.com",
+            databaseURL: "https://fire-b-a8878.firebaseio.com",
+            projectId: "fire-b-a8878",
+            storageBucket: "fire-b-a8878.appspot.com",
+            messagingSenderId: "658673187627",
+            appId: "1:658673187627:web:6e4c29af661785f0afa36e"
+        };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
         // GSAP Animations
         gsap.from(".hero h1", { duration: 1, y: -60, opacity: 0, ease: "power3.out" });
@@ -376,7 +383,7 @@
         });
 
         // Registration Function
-        function register() {
+        window.register = async function() {
             const name = document.getElementById('name').value;
             const instEmail = document.getElementById('instEmail').value;
             const personalEmail = document.getElementById('personalEmail').value;
@@ -405,19 +412,21 @@
             }
 
             if (name && instEmail && personalEmail && school && location && course) {
-                // Save to Firebase Realtime Database
-                const registrationRef = database.ref('registrations').push();
-                registrationRef.set({
-                    name: name,
-                    institutionEmail: instEmail,
-                    personalEmail: personalEmail,
-                    school: school,
-                    location: location,
-                    course: course,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                })
-                .then(() => {
-                    alertMessage.textContent = `Welcome, ${name}! You've registered for ${course} course(s) from ${school}, ${location}. Check your email (${instEmail}) for confirmation.`;
+                try {
+                    // Save to Firebase Realtime Database with status: pending
+                    const registrationRef = ref(database, 'registrations');
+                    const newRegistration = push(registrationRef);
+                    await set(newRegistration, {
+                        name: name,
+                        institutionEmail: instEmail,
+                        personalEmail: personalEmail,
+                        school: school,
+                        location: location,
+                        course: course,
+                        status: 'pending',
+                        timestamp: Date.now()
+                    });
+                    alertMessage.textContent = `Thank you, ${name}! Your registration for ${course} course(s) has been submitted for admin approval. You'll receive an email at ${instEmail} once approved.`;
                     alertModal.style.display = 'flex';
                     gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
                     // Reset form
@@ -427,21 +436,20 @@
                     document.getElementById('school').value = '';
                     document.getElementById('location').value = '';
                     document.getElementById('course').value = '';
-                })
-                .catch((error) => {
+                } catch (error) {
                     alertMessage.textContent = `Error: ${error.message}. Please try again.`;
                     alertModal.style.display = 'flex';
                     gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
-                });
+                }
             } else {
                 alertMessage.textContent = 'Please fill in all fields.';
                 alertModal.style.display = 'flex';
                 gsap.to(".alert-content", { duration: 0.5, opacity: 1, ease: "power2.out" });
             }
-        }
+        };
 
         // Close Alert Function
-        function closeAlert() {
+        window.closeAlert = function() {
             const alertModal = document.getElementById('custom-alert');
             gsap.to(".alert-content", { 
                 duration: 0.3, 
@@ -451,7 +459,7 @@
                     alertModal.style.display = 'none';
                 }
             });
-        }
+        };
     </script>
 </body>
 </html>
