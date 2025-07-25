@@ -330,7 +330,7 @@
         await signInWithEmailAndPassword(auth, email, password);
         showAlert('Signed in successfully! Redirecting to dashboard...', true);
         setTimeout(() => {
-          window.location.href = "learner-dashboard.html";
+          window.location.href = "dashboard.html";
         }, 1500);
       } catch (error) {
         console.error("Sign-in error:", error);
