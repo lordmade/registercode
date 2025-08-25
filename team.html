@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mogalakwena Men's Relate - Our Team</title>
+  <style>
+    :root {
+      --primary-green: #2e7d32;
+      --secondary-gold: #f9a825;
+      --light-green: #a5d6a7;
+      --dark-green: #1b5e20;
+      --bg-white: #ffffff;
+      --text-black: #000000;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: var(--text-black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+      text-align: center;
+      padding: 20px 10px;
+      overflow: hidden;
+      height: 400px;
+    }
+
+    header::before, header::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--secondary-gold), transparent);
+      transform: rotate(45deg);
+    }
+
+    header::before {
+      top: -75px;
+      left: -75px;
+    }
+
+    header::after {
+      bottom: -75px;
+      right: -75px;
+    }
+
+    .hero {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      color: var(--bg-white);
+      font-size: 36px;
+      margin: 0;
+    }
+
+    .hero p {
+      color: var(--secondary-gold);
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .hero .profile-text {
+      color: var(--primary-green);
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero .profile-text::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 2px;
+      background: var(--primary-green);
+      margin-top: 5px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--primary-green);
+      z-index: 1000;
+    }
+
+    .nav-menu {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .nav-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--bg-white);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--secondary-gold);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 24px;
+      color: var(--bg-white);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 80px auto 20px;
+      padding: 20px;
+      position: relative;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary-green), var(--light-green));
+      z-index: -1;
+    }
+
+    section {
+      padding-left: 70px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: var(--primary-green);
+      font-size: 24px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .team-member {
+      text-align: center;
+    }
+
+    .team-member img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-green);
+    }
+
+    .team-member h3 {
+      color: var(--dark-green);
+      font-size: 20px;
+      margin: 10px 0 5px;
+    }
+
+    .team-member p {
+      margin: 0;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 8px 15px;
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .button:hover {
+      background-color: var(--dark-green);
+    }
+
+    footer {
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-align: center;
+      padding: 10px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(to top right, var(--secondary-gold), transparent);
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background: var(--primary-green);
+        padding: 10px 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links li {
+        padding: 10px 20px;
+        text-align: center;
+      }
+
+      .nav-menu {
+        justify-content: flex-end;
+        padding: 10px;
+      }
+
+      .menu-toggle:checked ~ .nav-links {
+        display: flex;
+      }
+
+      header {
+        height: 300px;
+      }
+
+      .hero img {
+        max-width: 150px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero .profile-text {
+        font-size: 20px;
+        bottom: 10px;
+        left: 10px;
+      }
+
+      main {
+        margin-top: 60px;
+      }
+
+      section {
+        padding-left: 40px;
+      }
+
+      .team-member img {
+        width: 120px;
+        height: 120px;
+      }
+
+      .team-member h3 {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links a {
+        font-size: 14px;
+      }
+
+      section {
+        padding-left: 20px;
+      }
+
+      main::before {
+        width: 15px;
+      }
+
+      .hero img {
+        max-width: 120px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .hero .profile-text {
+        font-size: 18px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .team-member img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .team-member h3 {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <img src="logo.png" alt="Mogalakwena Men's Relate Logo" class="logo">
+      <h1>Mogalakwena Men's Relate</h1>
+      <p style="color: var(--secondary-gold);">Our Team</p>
+      <div class="profile-text">Team</div>
+    </div>
+    <nav>
+      <div class="nav-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger">☰</label>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="governance.html">Governance</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>The Officers of the Management Committee</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <img src="chairperson.jpg" alt="MR G MASHILO">
+          <h3>Chairperson</h3>
+          <p>MR G MASHILO</p>
+        </div>
+        <div class="team-member">
+          <img src="deputy_chairperson.jpg" alt="MR G MOETLO">
+          <h3>Deputy Chairperson</h3>
+          <p>MR G MOETLO</p>
+        </div>
+        <div class="team-member">
+          <img src="treasurer.jpg" alt="MR M KEKAE">
+          <h3>Treasurer</h3>
+          <p>MR M KEKAE</p>
+        </div>
+        <div class="team-member">
+          <img src="secretary.jpg" alt="MR J MOREMA">
+          <h3>Secretary</h3>
+          <p>MR J MOREMA</p>
+        </div>
+        <div class="team-member">
+          <img src="deputy_secretary.jpg" alt="MR I KEKAE">
+          <h3>Deputy Secretary</h3>
+          <p>MR I KEKAE</p>
+        </div>
+      </div>
+      <a href="index.html" class="button">Back to Home</a>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Mogalakwena Men's Relate. All rights reserved.</p>
+  </footer>
+</body>
+</html>
