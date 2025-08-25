@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mogalakwena Men's Relate - Governance</title>
+  <style>
+    :root {
+      --primary-green: #2e7d32;
+      --secondary-gold: #f9a825;
+      --light-green: #a5d6a7;
+      --dark-green: #1b5e20;
+      --bg-white: #ffffff;
+      --text-black: #000000;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: var(--text-black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+      text-align: center;
+      padding: 20px 10px;
+      overflow: hidden;
+      height: 400px;
+    }
+
+    header::before, header::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--secondary-gold), transparent);
+      transform: rotate(45deg);
+    }
+
+    header::before {
+      top: -75px;
+      left: -75px;
+    }
+
+    header::after {
+      bottom: -75px;
+      right: -75px;
+    }
+
+    .hero {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      color: var(--bg-white);
+      font-size: 36px;
+      margin: 0;
+    }
+
+    .hero p {
+      color: var(--secondary-gold);
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .hero .profile-text {
+      color: var(--primary-green);
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero .profile-text::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 2px;
+      background: var(--primary-green);
+      margin-top: 5px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--primary-green);
+      z-index: 1000;
+    }
+
+    .nav-menu {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .nav-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--bg-white);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--secondary-gold);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 24px;
+      color: var(--bg-white);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 80px auto 20px;
+      padding: 20px;
+      position: relative;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary-green), var(--light-green));
+      z-index: -1;
+    }
+
+    section {
+      padding-left: 70px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: var(--primary-green);
+      font-size: 24px;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 8px 15px;
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .button:hover {
+      background-color: var(--dark-green);
+    }
+
+    footer {
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-align: center;
+      padding: 10px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(to top right, var(--secondary-gold), transparent);
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background: var(--primary-green);
+        padding: 10px 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links li {
+        padding: 10px 20px;
+        text-align: center;
+      }
+
+      .nav-menu {
+        justify-content: flex-end;
+        padding: 10px;
+      }
+
+      .menu-toggle:checked ~ .nav-links {
+        display: flex;
+      }
+
+      header {
+        height: 300px;
+      }
+
+      .hero img {
+        max-width: 150px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero .profile-text {
+        font-size: 20px;
+        bottom: 10px;
+        left: 10px;
+      }
+
+      main {
+        margin-top: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links a {
+        font-size: 14px;
+      }
+
+      section {
+        padding-left: 20px;
+      }
+
+      main::before {
+        width: 15px;
+      }
+
+      .hero img {
+        max-width: 120px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .hero .profile-text {
+        font-size: 18px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <img src="logo.png" alt="Mogalakwena Men's Relate Logo" class="logo">
+      <h1>Mogalakwena Men's Relate</h1>
+      <p style="color: var(--secondary-gold);">Governance</p>
+      <div class="profile-text">Governance</div>
+    </div>
+    <nav>
+      <div class="nav-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger">☰</label>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="governance.html">Governance</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Organizational Structure</h2>
+      <p>Mogalakwena Men's Relate (MMR) is governed by a dedicated leadership team committed to upholding the organization's mission and values. Our governance structure ensures transparency, accountability, and effective decision-making to support community development initiatives.</p>
+      <p>The organization is led by an Executive Committee, which includes a Chairperson, Secretary, Treasurer, and other elected members. This committee oversees strategic planning, financial management, and program implementation, ensuring alignment with our goals of unity and empowerment.</p>
+      <h2>Key Principles</h2>
+      <ul>
+        <li><strong>Transparency:</strong> Open communication and reporting to all stakeholders.</li>
+        <li><strong>Accountability:</strong> Responsibility for actions and resources used.</li>
+        <li><strong>Inclusivity:</strong> Representation of diverse voices within the community.</li>
+        <li><strong>Sustainability:</strong> Long-term planning for enduring impact.</li>
+      </ul>
+      <a href="index.html" class="button">Back to Home</a>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Mogalakwena Men's Relate. All rights reserved.</p>
+  </footer>
+</body>
+</html>
