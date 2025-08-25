@@ -163,40 +163,23 @@
       z-index: -1;
     }
 
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+    section {
       padding-left: 70px;
+      margin-bottom: 20px;
     }
 
-    .card {
-      background: var(--bg-white);
-      border: 2px solid var(--primary-green);
-      border-radius: 10px;
-      padding: 15px;
-      width: calc(33.33% - 13.33px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+    h2 {
+      color: var(--primary-green);
+      font-size: 24px;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h3 {
+    h3 {
       color: var(--dark-green);
       font-size: 20px;
-      margin-top: 0;
     }
 
-    .card ul {
+    ul {
       padding-left: 20px;
-      margin: 10px 0;
-    }
-
-    .card p {
-      margin: 10px 0 0;
     }
 
     .button {
@@ -287,15 +270,6 @@
         left: 10px;
       }
 
-      .card-container {
-        padding-left: 40px;
-        flex-direction: column;
-      }
-
-      .card {
-        width: 100%;
-      }
-
       main {
         margin-top: 60px;
       }
@@ -304,6 +278,14 @@
     @media (max-width: 480px) {
       .nav-links a {
         font-size: 14px;
+      }
+
+      section {
+        padding-left: 20px;
+      }
+
+      main::before {
+        width: 15px;
       }
 
       .hero img {
@@ -322,12 +304,12 @@
         font-size: 18px;
       }
 
-      .card-container {
-        padding-left: 20px;
+      h2 {
+        font-size: 18px;
       }
 
-      .card h3 {
-        font-size: 18px;
+      h3 {
+        font-size: 16px;
       }
 
       .button {
@@ -364,28 +346,20 @@
       <h2>Welcome</h2>
       <p>Mogalakwena Men's Relate (herein referred as MMR) is an organization which aims to promote unity amongst men in Mogalakwena and promote social cohesion thus addressing community social ills.</p>
       <p>The name of the organization shall be called Mogalakwena Men's Relate (MMR).</p>
+      <h3>Purpose</h3>
+      <p>The purpose of this organization is to stand against amongst others; Social ills, GBV, Communicable disease, Non-communicable disease, Child abuse, Poverty alleviation, Inequality, Unemployment, Illiteracy, Crime, Juvenile delinquency, Illicit drugs. Embark on programmes aimed at Community Development and Empowerment.</p>
+      <h3>Vision</h3>
+      <p>Mogalakwena Men's Relate strives to make men aware of all social ills within the community and create a conducive environment where all people should live in peace and harmony.</p>
+      <h3>Mission</h3>
+      <p>Create a conducive environment within communities and ensuring that people would be able to contribute meaningfully to sustainable development by:</p>
+      <ul>
+        <li>Empowering communities</li>
+        <li>Contribute to reduce the level of inequality</li>
+        <li>Addressing social ills impacting our people</li>
+        <li>Strive to represent men thus leading to economic development</li>
+      </ul>
+      <a href="about.html" class="button">Learn More</a>
     </section>
-    <div class="card-container">
-      <div class="card">
-        <h3>Purpose</h3>
-        <p>The purpose of this organization is to stand against amongst others; Social ills, GBV, Communicable disease, Non-communicable disease, Child abuse, Poverty alleviation, Inequality, Unemployment, Illiteracy, Crime, Juvenile delinquency, Illicit drugs. Embark on programmes aimed at Community Development and Empowerment.</p>
-      </div>
-      <div class="card">
-        <h3>Vision</h3>
-        <p>Mogalakwena Men's Relate strives to make men aware of all social ills within the community and create a conducive environment where all people should live in peace and harmony.</p>
-      </div>
-      <div class="card">
-        <h3>Mission</h3>
-        <p>Create a conducive environment within communities and ensuring that people would be able to contribute meaningfully to sustainable development by:</p>
-        <ul>
-          <li>Empowering communities</li>
-          <li>Contribute to reduce the level of inequality</li>
-          <li>Addressing social ills impacting our people</li>
-          <li>Strive to represent men thus leading to economic development</li>
-        </ul>
-      </div>
-    </div>
-    <a href="about.html" class="button">Learn More</a>
   </main>
   <footer>
     <p>&copy; 2025 Mogalakwena Men's Relate. All rights reserved.</p>
