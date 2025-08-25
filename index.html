@@ -1,333 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Rare Grade Devs - Splash</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mogalakwena Men's Relate - Home</title>
   <style>
     :root {
-      --primary-blue: #3b82f6;
-      --text-dark: #f1f5f9;
-      --text-light: #d1d5db;
-      --border: #93c5fd;
-      --background: rgba(30, 64, 175, 0.9);
+      --primary-green: #2e7d32;
+      --secondary-gold: #f9a825;
+      --light-green: #a5d6a7;
+      --dark-green: #1b5e20;
+      --bg-white: #ffffff;
+      --text-black: #000000;
     }
-    * {
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      touch-action: manipulation;
-    }
+
     body {
-      font-family: 'Fira Code', monospace;
-      background: linear-gradient(135deg, #020084, #0404d8);
-      min-height: 100vh;
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: var(--text-black);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+      text-align: center;
+      padding: 20px 10px;
+      overflow: hidden;
+      height: 400px;
+    }
+
+    header::before, header::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--secondary-gold), transparent);
+      transform: rotate(45deg);
+    }
+
+    header::before {
+      top: -75px;
+      left: -75px;
+    }
+
+    header::after {
+      bottom: -75px;
+      right: -75px;
+    }
+
+    .hero {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      color: var(--bg-white);
+      font-size: 36px;
+      margin: 0;
+    }
+
+    .hero p {
+      color: var(--secondary-gold);
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .hero .profile-text {
+      color: var(--primary-green);
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero .profile-text::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 2px;
+      background: var(--primary-green);
+      margin-top: 5px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--primary-green);
+      z-index: 1000;
+    }
+
+    .nav-menu {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .nav-links {
+      list-style: none;
       margin: 0;
       padding: 0;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      transition: opacity 0.5s ease;
+      gap: 20px;
     }
-    body.fade-out {
-      opacity: 0;
+
+    .nav-links a {
+      color: var(--bg-white);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s;
     }
-    .splash-container {
-      text-align: center;
-      position: relative;
-      z-index: 10;
+
+    .nav-links a:hover {
+      color: var(--secondary-gold);
     }
-    .logo-container {
-      position: relative;
-      width: 150px;
-      height: 150px;
-      margin: 0 auto;
-    }
-    .chaxo-logo {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .loader {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 120px;
-      height: 120px;
-    }
-    .loader-circle {
-      stroke: #93c5fd;
-      stroke-width: 6;
-      fill: none;
-      stroke-linecap: round;
-      transform-origin: center;
-      animation: rotate 1.5s linear infinite;
-    }
-    .loader-path {
-      stroke: url(#gradient);
-      stroke-width: 6;
-      fill: none;
-      stroke-linecap: round;
-      animation: dash 1.5s ease-in-out infinite;
-    }
-    .circuit-overlay {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      opacity: 0.2;
-    }
-    .splash-text {
-      color: #f1f5f9;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      font-size: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    .gradient-text {
-      background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
-    @keyframes shine {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    .custom-alert {
+
+    .hamburger {
       display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(30, 64, 175, 0.95);
-      padding: 1.5rem 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      border: 1px solid #93c5fd;
-      z-index: 1000;
-      color: #f1f5f9;
-      font-weight: 500;
-      text-align: center;
-      max-width: 90%;
-      width: 400px;
-    }
-    .custom-alert.active {
-      display: block;
-    }
-    .custom-alert .close-btn {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      width: 24px;
-      height: 24px;
+      font-size: 24px;
+      color: var(--bg-white);
       background: none;
       border: none;
-      color: #f1f5f9;
       cursor: pointer;
-      transition: transform 0.2s ease, color 0.2s ease;
     }
-    .custom-alert .close-btn:hover {
-      transform: scale(1.2);
-      color: #93c5fd;
+
+    .menu-toggle {
+      display: none;
     }
-    .custom-alert .close-btn svg {
-      width: 100%;
+
+    main {
+      max-width: 800px;
+      margin: 80px auto 20px;
+      padding: 20px;
+      position: relative;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
       height: 100%;
+      background: linear-gradient(to bottom, var(--primary-green), var(--light-green));
+      z-index: -1;
     }
-    .custom-alert .retry-btn {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background: #ffffff;
-      color: #020084;
-      border: 1px solid #020084;
-      border-radius: 9999px;
-      font-weight: 600;
-      font-family: 'Fira Code', monospace;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease;
+
+    section {
+      padding-left: 70px;
+      margin-bottom: 20px;
     }
-    .custom-alert .retry-btn:hover {
-      background: #e5e7eb;
-      transform: scale(1.05);
+
+    h2 {
+      color: var(--primary-green);
+      font-size: 24px;
     }
-    @keyframes rotate {
-      100% { transform: rotate(360deg); }
+
+    h3 {
+      color: var(--dark-green);
+      font-size: 20px;
     }
-    @keyframes dash {
-      0% { stroke-dasharray: 188.5; stroke-dashoffset: 188.5; }
-      50% { stroke-dashoffset: 0; }
-      100% { stroke-dasharray: 188.5; stroke-dashoffset: -188.5; }
+
+    ul {
+      padding-left: 20px;
     }
-    @media (max-width: 640px) {
-      .logo-container {
-        width: 100px;
-        height: 100px;
+
+    .button {
+      display: inline-block;
+      padding: 8px 15px;
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .button:hover {
+      background-color: var(--dark-green);
+    }
+
+    footer {
+      background-color: var(--primary-green);
+      color: var(--bg-white);
+      text-align: center;
+      padding: 10px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(to top right, var(--secondary-gold), transparent);
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
       }
-      .loader {
-        width: 80px;
-        height: 80px;
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background: var(--primary-green);
+        padding: 10px 0;
       }
-      .splash-text {
-        font-size: 1.25rem;
+
+      .nav-links.active {
+        display: flex;
       }
-      .custom-alert {
-        width: 90%;
-        padding: 1rem;
+
+      .nav-links li {
+        padding: 10px 20px;
+        text-align: center;
       }
-      .custom-alert .retry-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
+
+      .nav-menu {
+        justify-content: flex-end;
+        padding: 10px;
+      }
+
+      .menu-toggle:checked ~ .nav-links {
+        display: flex;
+      }
+
+      header {
+        height: 300px;
+      }
+
+      .hero img {
+        max-width: 150px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero .profile-text {
+        font-size: 20px;
+        bottom: 10px;
+        left: 10px;
+      }
+
+      main {
+        margin-top: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links a {
+        font-size: 14px;
+      }
+
+      section {
+        padding-left: 20px;
+      }
+
+      main::before {
+        width: 15px;
+      }
+
+      .hero img {
+        max-width: 120px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .hero .profile-text {
+        font-size: 18px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      .button {
+        padding: 6px 12px;
+        font-size: 12px;
       }
     }
   </style>
 </head>
 <body>
-  <svg class="circuit-overlay">
-    <path d="M0 150 Q 300 50, 600 150 T 1200 150 T 1800 150" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="8,8"></path>
-  </svg>
-  <div class="splash-container">
-    <div class="logo-container">
-      <img src="https://dashboard.raregradetech.com/uploads/company/b65f0e95c1b847586fb52cd9c734f19a.png" alt="Rare Grade Tech Logo" class="chaxo-logo" />
-      <svg class="loader" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
-            <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0.8" />
-          </linearGradient>
-        </defs>
-        <circle cx="60" cy="60" r="50" class="loader-circle" />
-        <path d="M 10 60 A 50 50 0 0 1 110 60" class="loader-path" />
-      </svg>
+  <header>
+    <div class="hero">
+      <img src="logo.png" alt="Mogalakwena Men's Relate Logo" class="logo">
+      <h1>Mogalakwena Men's Relate</h1>
+      <p style="color: var(--secondary-gold);">Where Men Relate</p>
+      <div class="profile-text">Profile</div>
     </div>
-    <p class="splash-text text-xl md:text-2xl mt-6">Welcome to <span class="gradient-text">Rare Grade Devs</span></p>
-  </div>
-  <div id="custom-alert" class="custom-alert">
-    <button class="close-btn" onclick="hideAlert()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    <p id="alert-message">An error occurred. Please try again later.</p>
-    <button class="retry-btn" onclick="retryAuth()">Retry</button>
-  </div>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
-      authDomain: "fire-b-a8878.firebaseapp.com",
-      databaseURL: "https://fire-b-a8878.firebaseio.com",
-      projectId: "fire-b-a8878",
-      storageBucket: "fire-b-a8878.appspot.com",
-      messagingSenderId: "658673187627",
-      appId: "1:658673187627:web:6e4c29af661785f0afa36e"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const customAlert = document.getElementById("custom-alert");
-    const alertMessage = document.getElementById("alert-message");
-
-    // GSAP Animations
-    gsap.from(".chaxo-logo", { duration: 1.2, opacity: 0, scale: 0.7, ease: "power3.out" });
-    gsap.from(".splash-text", { duration: 1, opacity: 0, y: 20, delay: 0.5, ease: "power3.out" });
-    gsap.from(".loader", { duration: 1, opacity: 0, scale: 0.8, delay: 0.3, ease: "power2.out" });
-    gsap.to(".circuit-overlay path", { duration: 12, strokeDashoffset: -120, repeat: -1, ease: "none" });
-    gsap.from(".custom-alert.active", { duration: 0.3, opacity: 0, ease: "power2.out" });
-
-    function showAlert(message, autoHide = true) {
-      alertMessage.textContent = message;
-      customAlert.classList.add("active");
-      if (autoHide) {
-        setTimeout(hideAlert, 5000);
-      }
-    }
-
-    function hideAlert() {
-      gsap.to(".custom-alert", { 
-        duration: 0.3, 
-        opacity: 0, 
-        ease: "power2.in", 
-        onComplete: () => {
-          customAlert.classList.remove("active");
-        }
-      });
-    }
-
-    async function checkAuthState(retries = 3, delay = 1000) {
-      for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-          await new Promise((resolve, reject) => {
-            onAuthStateChanged(auth, async (user) => {
-              try {
-                if (user) {
-                  const userRef = ref(db, `users/${user.uid}`);
-                  const snapshot = await get(userRef);
-                  const destination = snapshot.exists() ? "dashboard.html" : "home.html";
-                  document.body.classList.add("fade-out");
-                  setTimeout(() => {
-                    window.location.href = destination;
-                  }, 1500);
-                  resolve();
-                } else {
-                  document.body.classList.add("fade-out");
-                  setTimeout(() => {
-                    window.location.href = "home.html";
-                  }, 1500);
-                  resolve();
-                }
-              } catch (error) {
-                reject(error);
-              }
-            }, reject);
-          });
-          return;
-        } catch (error) {
-          console.error(`Auth attempt ${attempt} failed:`, error);
-          if (attempt === retries) {
-            let message = "Failed to connect to server. Please check your connection and try again.";
-            if (error.code === "permission-denied") {
-              message = "Permission denied. Please contact support.";
-            } else if (error.code === "unavailable") {
-              message = "Server is temporarily unavailable. Please try again later.";
-            }
-            showAlert(message, false);
-          } else {
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
-        }
-      }
-    }
-
-    function retryAuth() {
-      hideAlert();
-      checkAuthState();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      checkAuthState();
-    });
-  </script>
+    <nav>
+      <div class="nav-menu">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger">☰</label>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="governance.html">Governance</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Welcome</h2>
+      <p>Mogalakwena Men's Relate (herein referred as MMR) is an organization which aims to promote unity amongst men in Mogalakwena and promote social cohesion thus addressing community social ills.</p>
+      <p>The name of the organization shall be called Mogalakwena Men's Relate (MMR).</p>
+      <h3>Purpose</h3>
+      <p>The purpose of this organization is to stand against amongst others; Social ills, GBV, Communicable disease, Non-communicable disease, Child abuse, Poverty alleviation, Inequality, Unemployment, Illiteracy, Crime, Juvenile delinquency, Illicit drugs. Embark on programmes aimed at Community Development and Empowerment.</p>
+      <h3>Vision</h3>
+      <p>Mogalakwena Men's Relate strives to make men aware of all social ills within the community and create a conducive environment where all people should live in peace and harmony.</p>
+      <h3>Mission</h3>
+      <p>Create a conducive environment within communities and ensuring that people would be able to contribute meaningfully to sustainable development by:</p>
+      <ul>
+        <li>Empowering communities</li>
+        <li>Contribute to reduce the level of inequality</li>
+        <li>Addressing social ills impacting our people</li>
+        <li>Strive to represent men thus leading to economic development</li>
+      </ul>
+      <a href="about.html" class="button">Learn More</a>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Mogalakwena Men's Relate. All rights reserved.</p>
+  </footer>
 </body>
 </html>
