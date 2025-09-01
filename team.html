@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mogalakwena Men's Relate - Our Team</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     :root {
       --primary-green: #2e7d32;
@@ -57,11 +58,27 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      background-image: url('https://i.postimg.cc/wj7Gq5yJ/Whats-App-Image-2025-09-01-at-13-10-53-1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
-    .hero img {
-      max-width: 200px;
-      margin-bottom: 10px;
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-green);
+      opacity: 0.4;
+      z-index: 1;
+    }
+
+    .hero h1, .hero p, .hero .profile-text {
+      position: relative;
+      z-index: 2;
     }
 
     .hero h1 {
@@ -169,8 +186,16 @@
     }
 
     h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       color: var(--primary-green);
       font-size: 24px;
+    }
+
+    .fa-icon {
+      color: var(--secondary-gold);
+      font-size: 1.2em;
     }
 
     .team-grid {
@@ -270,10 +295,6 @@
         height: 300px;
       }
 
-      .hero img {
-        max-width: 150px;
-      }
-
       .hero h1 {
         font-size: 28px;
       }
@@ -319,10 +340,6 @@
         width: 15px;
       }
 
-      .hero img {
-        max-width: 120px;
-      }
-
       .hero h1 {
         font-size: 24px;
       }
@@ -352,13 +369,16 @@
       .team-member h3 {
         font-size: 16px;
       }
+
+      .fa-icon {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="hero">
-      <img src="logo.png" alt="Mogalakwena Men's Relate Logo" class="logo">
       <h1>Mogalakwena Men's Relate</h1>
       <p style="color: var(--secondary-gold);">Our Team</p>
       <div class="profile-text">Team</div>
@@ -379,30 +399,30 @@
   </header>
   <main>
     <section>
-      <h2>The Officers of the Management Committee</h2>
+      <h2><i class="fas fa-users fa-icon"></i>The Officers of the Management Committee</h2>
       <div class="team-grid">
         <div class="team-member">
-          <img src="chairperson.jpg" alt="MR G MASHILO">
+          <img src="https://placehold.co/150x150/cccccc/666666?text=Avatar" alt="MR G MASHILO">
           <h3>Chairperson</h3>
           <p>MR G MASHILO</p>
         </div>
         <div class="team-member">
-          <img src="deputy_chairperson.jpg" alt="MR G MOETLO">
+          <img src="https://placehold.co/150x150/cccccc/666666?text=Avatar" alt="MR G MOETLO">
           <h3>Deputy Chairperson</h3>
           <p>MR G MOETLO</p>
         </div>
         <div class="team-member">
-          <img src="treasurer.jpg" alt="MR M KEKAE">
+          <img src="https://placehold.co/150x150/cccccc/666666?text=Avatar" alt="MR M KEKAE">
           <h3>Treasurer</h3>
           <p>MR M KEKAE</p>
         </div>
         <div class="team-member">
-          <img src="secretary.jpg" alt="MR J MOREMA">
+          <img src="https://placehold.co/150x150/cccccc/666666?text=Avatar" alt="MR J MOREMA">
           <h3>Secretary</h3>
           <p>MR J MOREMA</p>
         </div>
         <div class="team-member">
-          <img src="deputy_secretary.jpg" alt="MR I KEKAE">
+          <img src="https://placehold.co/150x150/cccccc/666666?text=Avatar" alt="MR I KEKAE">
           <h3>Deputy Secretary</h3>
           <p>MR I KEKAE</p>
         </div>
