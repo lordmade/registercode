@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mogalakwena Men's Relate - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     :root {
       --primary-green: #2e7d32;
@@ -61,6 +62,23 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-green);
+      opacity: 0.4;
+      z-index: 1;
+    }
+
+    .hero h1, .hero p, .hero .profile-text {
+      position: relative;
+      z-index: 2;
     }
 
     .hero h1 {
@@ -167,6 +185,12 @@
       margin-bottom: 20px;
     }
 
+    h2, h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     h2 {
       color: var(--primary-green);
       font-size: 24px;
@@ -175,6 +199,11 @@
     h3 {
       color: var(--dark-green);
       font-size: 20px;
+    }
+
+    .fa-icon {
+      color: var(--secondary-gold);
+      font-size: 1.2em;
     }
 
     ul {
@@ -307,6 +336,10 @@
         padding: 6px 12px;
         font-size: 12px;
       }
+
+      .fa-icon {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
@@ -333,14 +366,14 @@
   </header>
   <main>
     <section>
-      <h2>Welcome</h2>
+      <h2><i class="fas fa-handshake fa-icon"></i>Welcome</h2>
       <p>Mogalakwena Men's Relate (herein referred as MMR) is an organization which aims to promote unity amongst men in Mogalakwena and promote social cohesion thus addressing community social ills.</p>
       <p>The name of the organization shall be called Mogalakwena Men's Relate (MMR).</p>
-      <h3>Purpose</h3>
+      <h3><i class="fas fa-bullseye fa-icon"></i>Purpose</h3>
       <p>The purpose of this organization is to stand against amongst others; Social ills, GBV, Communicable disease, Non-communicable disease, Child abuse, Poverty alleviation, Inequality, Unemployment, Illiteracy, Crime, Juvenile delinquency, Illicit drugs. Embark on programmes aimed at Community Development and Empowerment.</p>
-      <h3>Vision</h3>
+      <h3><i class="fas fa-eye fa-icon"></i>Vision</h3>
       <p>Mogalakwena Men's Relate strives to make men aware of all social ills within the community and create a conducive environment where all people should live in peace and harmony.</p>
-      <h3>Mission</h3>
+      <h3><i class="fas fa-rocket fa-icon"></i>Mission</h3>
       <p>Create a conducive environment within communities and ensuring that people would be able to contribute meaningfully to sustainable development by:</p>
       <ul>
         <li>Empowering communities</li>
