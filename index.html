@@ -85,47 +85,14 @@
     .hero .logo {
       position: relative;
       z-index: 2;
-      max-width: 200px; /* Increased logo size */
+      max-width: 300px; /* Increased logo size for visibility */
       height: auto;
-      margin-bottom: 20px;
-      margin-top: 40px; /* Kept to move logo down */
       padding: 10px;
     }
 
-    .hero h1, .hero p, .hero .profile-text, .hero .logo {
+    .hero .logo {
       position: relative;
       z-index: 2;
-    }
-
-    .hero h1 {
-      color: var(--bg-white);
-      font-size: 36px;
-      margin: 0;
-    }
-
-    .hero p {
-      color: var(--secondary-gold);
-      font-size: 18px;
-      margin: 5px 0;
-    }
-
-    .hero .profile-text {
-      color: var(--primary-green);
-      font-size: 24px;
-      font-weight: bold;
-      position: relative;
-      margin: 10px 0;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    .hero .profile-text::after {
-      content: '';
-      display: block;
-      width: 50px;
-      height: 2px;
-      background: var(--primary-green);
-      margin: 5px auto;
     }
 
     nav {
@@ -147,7 +114,7 @@
     }
 
     .nav-menu .logo {
-      max-width: 70px; /* Increased logo size */
+      max-width: 70px;
       height: auto;
       padding: 0;
     }
@@ -307,7 +274,7 @@
       }
 
       .nav-menu .logo {
-        max-width: 60px; /* Adjusted for tablet */
+        max-width: 60px;
         position: absolute;
         left: 10px;
         top: 50%;
@@ -322,17 +289,8 @@
         height: 300px;
       }
 
-      .hero h1 {
-        font-size: 28px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
       .hero .logo {
-        max-width: 160px; /* Adjusted for tablet */
-        margin-top: 30px;
+        max-width: 240px; /* Adjusted for tablet */
       }
 
       main {
@@ -353,21 +311,12 @@
         width: 15px;
       }
 
-      .hero h1 {
-        font-size: 24px;
-      }
-
-      .hero p {
-        font-size: 14px;
-      }
-
       .hero .logo {
-        max-width: 120px; /* Adjusted for mobile */
-        margin-top: 20px;
+        max-width: 180px; /* Adjusted for mobile */
       }
 
       .nav-menu .logo {
-        max-width: 50px; /* Adjusted for mobile */
+        max-width: 50px;
       }
 
       h2 {
@@ -393,9 +342,6 @@
   <header>
     <div class="hero">
       <img src="https://i.postimg.cc/9QFznmvp/3-2.png" alt="Mogalakwena Men's Relate Logo" class="logo" loading="lazy">
-      <h1>Mogalakwena Men's Relate</h1>
-      <p style="color: var(--secondary-gold);">Where Men Relate</p>
-      <div class="profile-text">Profile</div>
     </div>
     <nav>
       <div class="nav-menu">
