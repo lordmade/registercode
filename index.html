@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mogalakwena Men's Relate promotes unity among men and addresses social issues in Mogalakwena.">
+  <meta name="keywords" content="Mogalakwena, Men's Relate, social cohesion, community development">
+  <meta property="og:title" content="Mogalakwena Men's Relate">
+  <meta property="og:description" content="Join us to promote unity and address social ills in Mogalakwena.">
+  <meta property="og:image" content="https://i.postimg.cc/T2khZ7Wk/mens.png">
   <title>Mogalakwena Men's Relate - Home</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --primary-green: #2e7d32;
@@ -59,6 +64,7 @@
       justify-content: center;
       align-items: center;
       background-image: url('https://i.postimg.cc/kGRDfb6S/Whats-App-Image-2025-09-01-at-13-10-53.jpg');
+      background-color: var(--light-green); /* Fallback */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -79,11 +85,10 @@
     .hero .logo {
       position: relative;
       z-index: 2;
-      max-width: 150px; /* Adjusted to fit within circular background */
+      max-width: 150px;
       height: auto;
       margin-bottom: 20px;
-      background-color: var(--bg-white);
-      border-radius: 50%;
+      margin-top: 40px; /* Increased to move logo down */
       padding: 10px;
     }
 
@@ -108,9 +113,9 @@
       color: var(--primary-green);
       font-size: 24px;
       font-weight: bold;
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
+      position: relative;
+      margin: 10px 0;
+      text-align: center;
       text-transform: uppercase;
     }
 
@@ -120,7 +125,7 @@
       width: 50px;
       height: 2px;
       background: var(--primary-green);
-      margin-top: 5px;
+      margin: 5px auto;
     }
 
     nav {
@@ -137,7 +142,14 @@
       margin: 0 auto;
       padding: 10px 20px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-menu .logo {
+      max-width: 50px;
+      height: auto;
+      padding: 0;
     }
 
     .nav-links {
@@ -171,6 +183,17 @@
 
     .menu-toggle {
       display: none;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
     }
 
     main {
@@ -283,6 +306,14 @@
         padding: 10px;
       }
 
+      .nav-menu .logo {
+        max-width: 40px;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
       .menu-toggle:checked ~ .nav-links {
         display: flex;
       }
@@ -299,14 +330,9 @@
         font-size: 16px;
       }
 
-      .hero .profile-text {
-        font-size: 20px;
-        bottom: 10px;
-        left: 10px;
-      }
-
       .hero .logo {
-        max-width: 110px; /* Adjusted for tablet */
+        max-width: 110px;
+        margin-top: 30px; /* Adjusted for tablet */
       }
 
       main {
@@ -335,12 +361,13 @@
         font-size: 14px;
       }
 
-      .hero .profile-text {
-        font-size: 18px;
+      .hero .logo {
+        max-width: 90px;
+        margin-top: 20px; /* Adjusted for mobile */
       }
 
-      .hero .logo {
-        max-width: 90px; /* Adjusted for mobile */
+      .nav-menu .logo {
+        max-width: 30px;
       }
 
       h2 {
@@ -365,16 +392,19 @@
 <body>
   <header>
     <div class="hero">
-      <img src="https://i.postimg.cc/T2khZ7Wk/mens.png" alt="Mogalakwena Men's Relate Logo" class="logo">
+      <img src="https://i.postimg.cc/T2khZ7Wk/mens.png" alt="Mogalakwena Men's Relate Logo" class="logo" loading="lazy">
       <h1>Mogalakwena Men's Relate</h1>
       <p style="color: var(--secondary-gold);">Where Men Relate</p>
       <div class="profile-text">Profile</div>
     </div>
     <nav>
       <div class="nav-menu">
-        <input type="checkbox" id="menu-toggle" class="menu-toggle">
-        <label for="menu-toggle" class="hamburger">☰</label>
- <img src="https://i.postimg.cc/T2khZ7Wk/mens.png" alt="Mogalakwena Men's Relate Logo" class="logo">
+        <img src="https://i.postimg.cc/T2khZ7Wk/mens.png" alt="Mogalakwena Men's Relate Logo" class="logo" loading="lazy">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Toggle navigation menu">
+        <label for="menu-toggle" class="hamburger" aria-hidden="true">
+          <span class="visually-hidden">Toggle navigation menu</span>
+          ☰
+        </label>
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About Us</a></li>
