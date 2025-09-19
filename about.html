@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about Mogalakwena Men's Relate, our mission, values, and efforts to promote unity and address social issues in Mogalakwena.">
+  <meta name="keywords" content="Mogalakwena, Men's Relate, social cohesion, community empowerment, gender-based violence, poverty alleviation">
+  <meta name="author" content="Mogalakwena Men's Relate">
+  <meta property="og:title" content="Mogalakwena Men's Relate - About Us">
+  <meta property="og:description" content="Discover the story and values of Mogalakwena Men's Relate, dedicated to uniting men and fostering community development.">
+  <meta property="og:image" content="https://i.postimg.cc/9QFznmvp/3-2.png">
+  <link rel="icon" href="https://i.postimg.cc/kXNWZqcL/MENS-RELATE-LOG.png" type="image/png">
   <title>Mogalakwena Men's Relate - About Us</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --primary-green: #2e7d32;
@@ -13,6 +20,7 @@
       --dark-green: #1b5e20;
       --bg-white: #ffffff;
       --text-black: #000000;
+      --nav-height: 60px; /* Added for consistent nav spacing */
     }
 
     body {
@@ -59,6 +67,7 @@
       justify-content: center;
       align-items: center;
       background-image: url('https://i.postimg.cc/wj7Gq5yJ/Whats-App-Image-2025-09-01-at-13-10-53-1.jpg');
+      background-color: var(--light-green); /* Fallback */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -74,6 +83,14 @@
       background-color: var(--primary-green);
       opacity: 0.4;
       z-index: 1;
+    }
+
+    .hero .logo {
+      position: relative;
+      z-index: 2;
+      max-width: 370px;
+      height: auto;
+      padding: 10px;
     }
 
     .hero h1, .hero p, .hero .profile-text {
@@ -119,6 +136,7 @@
       width: 100%;
       background: var(--primary-green);
       z-index: 1000;
+      height: var(--nav-height);
     }
 
     .nav-menu {
@@ -126,7 +144,17 @@
       margin: 0 auto;
       padding: 10px 20px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-menu .logo {
+      max-width: 140px;
+      height: auto;
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     .nav-links {
@@ -162,9 +190,20 @@
       display: none;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
     main {
       max-width: 800px;
-      margin: 80px auto 20px;
+      margin: calc(var(--nav-height) + 20px) auto 20px;
       padding: 20px;
       position: relative;
     }
@@ -248,7 +287,7 @@
         flex-direction: column;
         width: 100%;
         position: absolute;
-        top: 60px;
+        top: var(--nav-height);
         left: 0;
         background: var(--primary-green);
         padding: 10px 0;
@@ -264,8 +303,11 @@
       }
 
       .nav-menu {
-        justify-content: flex-end;
         padding: 10px;
+      }
+
+      .nav-menu .logo {
+        max-width: 80px;
       }
 
       .menu-toggle:checked ~ .nav-links {
@@ -274,6 +316,10 @@
 
       header {
         height: 300px;
+      }
+
+      .hero .logo {
+        max-width: 280px;
       }
 
       .hero h1 {
@@ -291,7 +337,7 @@
       }
 
       main {
-        margin-top: 60px;
+        margin-top: calc(var(--nav-height) + 10px);
       }
     }
 
@@ -306,6 +352,14 @@
 
       main::before {
         width: 15px;
+      }
+
+      .hero .logo {
+        max-width: 210px;
+      }
+
+      .nav-menu .logo {
+        max-width: 60px;
       }
 
       .hero h1 {
@@ -336,16 +390,22 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="visually-hidden">Skip to main content</a>
   <header>
     <div class="hero">
+      <img src="https://i.postimg.cc/9QFznmvp/3-2.png" alt="Mogalakwena Men's Relate Logo" class="logo" width="370" height="auto" loading="lazy">
       <h1>Mogalakwena Men's Relate</h1>
       <p style="color: var(--secondary-gold);">About Us</p>
       <div class="profile-text">About</div>
     </div>
     <nav>
       <div class="nav-menu">
-        <input type="checkbox" id="menu-toggle" class="menu-toggle">
-        <label for="menu-toggle" class="hamburger">☰</label>
+        <img src="https://i.postimg.cc/kXNWZqcL/MENS-RELATE-LOG.png" alt="Mogalakwena Men's Relate Logo" class="logo" width="140" height="auto" loading="lazy">
+        <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Toggle navigation menu">
+        <label for="menu-toggle" class="hamburger" aria-hidden="true">
+          <span class="visually-hidden">Toggle navigation menu</span>
+          ☰
+        </label>
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About Us</a></li>
@@ -356,7 +416,7 @@
       </div>
     </nav>
   </header>
-  <main>
+  <main id="main-content">
     <section>
       <h2><i class="fas fa-book-open fa-icon"></i>Our Story</h2>
       <p>Mogalakwena Men's Relate (MMR) was founded with a vision to unite men in the Mogalakwena community, fostering social cohesion and addressing the challenges that affect our society. Established to combat social ills such as gender-based violence, poverty, and unemployment, MMR has grown into a beacon of hope and empowerment.</p>
@@ -373,6 +433,19 @@
   </main>
   <footer>
     <p>&copy; 2025 Mogalakwena Men's Relate. All rights reserved.</p>
+    <div class="social-links">
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook fa-icon"></i></a>
+      <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter fa-icon"></i></a>
+      <a href="mailto:info@mmr.org" aria-label="Email"><i class="fas fa-envelope fa-icon"></i></a>
+    </div>
   </footer>
+  <script>
+    document.querySelector('.hamburger').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        document.getElementById('menu-toggle').click();
+      }
+    });
+  </script>
 </body>
 </html>
