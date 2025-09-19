@@ -20,7 +20,7 @@
       --dark-green: #1b5e20;
       --bg-white: #ffffff;
       --text-black: #000000;
-      --nav-height: 60px; /* Added for consistent nav spacing */
+      --nav-height: 60px;
     }
 
     body {
@@ -67,7 +67,7 @@
       justify-content: center;
       align-items: center;
       background-image: url('https://i.postimg.cc/wj7Gq5yJ/Whats-App-Image-2025-09-01-at-13-10-53-1.jpg');
-      background-color: var(--light-green); /* Fallback */
+      background-color: var(--light-green);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -146,6 +146,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
 
     .nav-menu .logo {
@@ -163,6 +164,7 @@
       padding: 0;
       display: flex;
       gap: 20px;
+      margin-left: auto;
     }
 
     .nav-links a {
@@ -184,6 +186,10 @@
       background: none;
       border: none;
       cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     .menu-toggle {
@@ -394,9 +400,6 @@
   <header>
     <div class="hero">
       <img src="https://i.postimg.cc/9QFznmvp/3-2.png" alt="Mogalakwena Men's Relate Logo" class="logo" width="370" height="auto" loading="lazy">
-      <h1>Mogalakwena Men's Relate</h1>
-      <p style="color: var(--secondary-gold);">About Us</p>
-      <div class="profile-text">About</div>
     </div>
     <nav>
       <div class="nav-menu">
