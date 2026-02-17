@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VYNIX AI | CAPS Education Tutor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-remote-config-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <style>
+        :root { 
+            --color-cyan: #00f0ff;
+            --color-cyan-dark: #00b8c4;
+            --color-purple: #7000ff;
+            --color-purple-light: #9d4eff;
+            --bg-dark: #050508;
+            --bg-card: #0a0a0f;
+            --bg-elevated: #14141f;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(0, 240, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00f0ff, #7000ff);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-cyan); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(0, 240, 255, 0); } }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            background: var(--bg-dark);
+        }
+
+        /* Header */
+        .app-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 5, 8, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            animation: pulse-glow 3s infinite;
+        }
+
+        .brand-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .brand-text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text p {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .subject-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subject-selector:hover {
+            border-color: var(--color-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .subject-selector select {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .subject-selector select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .user-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .user-btn:hover {
+            border-color: var(--color-cyan);
+            color: var(--color-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .user-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Grade Badge */
+        .grade-badge {
+            padding: 6px 12px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--bg-dark);
+        }
+
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* Neural Background Effect */
+        .neural-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .neural-node {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--color-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--color-cyan);
+            animation: pulse 4s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-visual {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 32px;
+        }
+
+        .hologram-ring {
+            position: absolute;
+            border: 2px solid var(--color-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: rotate 20s linear infinite;
+        }
+
+        .hologram-ring:nth-child(1) { width: 100%; height: 100%; animation-duration: 20s; }
+        .hologram-ring:nth-child(2) { width: 75%; height: 75%; top: 12.5%; left: 12.5%; animation-duration: 15s; animation-direction: reverse; border-color: var(--color-purple); }
+        .hologram-ring:nth-child(3) { width: 50%; height: 50%; top: 25%; left: 25%; animation-duration: 10s; border-style: dashed; }
+
+        .brain-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            color: var(--color-cyan);
+            filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.5));
+        }
+
+        .floating-badges {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .float-badge {
+            position: absolute;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-cyan);
+            animation: float 6s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        .float-badge:nth-child(1) { top: 0; left: 0; animation-delay: 0s; }
+        .float-badge:nth-child(2) { top: 20%; right: 0; animation-delay: 2s; color: var(--color-purple); border-color: var(--color-purple); }
+        .float-badge:nth-child(3) { bottom: 20%; left: 10%; animation-delay: 4s; }
+
+        .welcome-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-cyan);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.1);
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            margin-bottom: 16px;
+        }
+
+        .action-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .action-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 700;
+            font-size: 0.875rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .message.ai .message-avatar {
+            background: var(--gradient-primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .message.user .message-avatar {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: calc(100% - 48px);
+        }
+
+        .message-bubble {
+            padding: 16px 20px;
+            border-radius: 20px;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .message.ai .message-bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .message.user .message-bubble {
+            background: var(--gradient-primary);
+            color: var(--bg-dark);
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+
+        .message-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .message.user .message-meta {
+            justify-content: flex-end;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-lang {
+            font-size: 0.75rem;
+            color: var(--color-cyan);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Math Formula Styling */
+        .math-formula {
+            background: var(--bg-elevated);
+            border-left: 3px solid var(--color-cyan);
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 0 12px 12px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-cyan);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Critical Alert */
+        .critical-alert {
+            background: rgba(222, 56, 49, 0.1);
+            border: 1px solid rgba(222, 56, 49, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+
+        .critical-alert h3 {
+            color: #FCA5A5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Input Area */
+        .input-container {
+            padding: 16px 20px 20px;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            z-index: 10;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: var(--bg-card);
+            padding: 8px 8px 8px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--color-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            outline: none;
+            resize: none;
+            max-height: 120px;
+            min-height: 24px;
+        }
+
+        .chat-input::placeholder { color: var(--text-secondary); }
+        .chat-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--color-cyan);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--gradient-primary);
+            color: var(--bg-dark);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .send-btn:disabled { 
+            opacity: 0.4; 
+            cursor: not-allowed; 
+            background: var(--border-color);
+        }
+
+        .disclaimer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Auth Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.95);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .auth-modal {
+            background: var(--bg-card);
+            padding: 48px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            animation: slideUp 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-primary);
+        }
+
+        .auth-modal .brand-icon {
+            margin: 0 auto 24px;
+            width: 64px;
+            height: 64px;
+        }
+
+        .auth-modal h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .auth-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .google-btn:hover {
+            border-color: var(--color-cyan);
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        /* Subject Sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 1500;
+        }
+
+        .sidebar-overlay.active { display: block; }
+
+        .subject-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 320px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            padding: 24px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1600;
+            overflow-y: auto;
+        }
+
+        .sidebar-overlay.active .subject-sidebar {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .close-sidebar {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-elevated);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .subject-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subject-item:hover, .subject-item.active {
+            border-color: var(--color-cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .subject-item.active {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .subject-icon-small {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .subject-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .subject-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 640px) {
+            .app-header { padding: 12px 16px; }
+            .brand-text h1 { font-size: 1.1rem; }
+            .messages-area { padding: 16px; }
+            .input-container { padding: 12px 16px 16px; }
+            .welcome-title { font-size: 1.5rem; }
+            .quick-actions { grid-template-columns: 1fr; }
+            .message { max-width: 90%; }
+            .subject-sidebar { width: 100%; }
+            .grade-badge { display: none; }
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                border-left: 1px solid var(--border-color);
+                border-right: 1px solid var(--border-color);
+            }
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <defs>
+                            <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00f0ff"/>
+                                <stop offset="100%" style="stop-color:#7000ff"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="20" cy="20" r="18" stroke="url(#headerGrad)" stroke-width="2"/>
+                        <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20" stroke="url(#headerGrad)" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="20" cy="20" r="4" fill="url(#headerGrad)"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>VYNIX AI</h1>
+                    <p>CAPS Education Tutor</p>
+                </div>
+                <div class="grade-badge" id="gradeBadge">Grade 12</div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="subject-selector" onclick="toggleSidebar()" data-cursor="hover">
+                    <span class="material-symbols-rounded text-cyan-400" id="currentSubjectIcon">calculate</span>
+                    <select id="subjectSelect" onchange="changeSubject(this.value)" onclick="event.stopPropagation()">
+                        <option value="mathematics">Mathematics</option>
+                        <option value="physical-sciences">Physical Sciences</option>
+                        <option value="life-sciences">Life Sciences</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="english">English FAL</option>
+                        <option value="afrikaans">Afrikaans FAL</option>
+                        <option value="history">History</option>
+                        <option value="geography">Geography</option>
+                    </select>
+                    <span class="material-symbols-rounded text-sm">expand_more</span>
+                </div>
+                
+                <button onclick="toggleAuth()" id="userBtn" class="user-btn">
+                    <span class="material-symbols-rounded">person</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="messages-area" id="messagesArea">
+            <div class="neural-bg" id="neuralBg"></div>
+            
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-visual">
+                    <div class="hologram-ring"></div>
+                    <div class="hologram-ring"></div>
+                    <div class="hologram-ring"></div>
+                    
+                    <svg class="brain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        <path d="M12 6v6l4 2"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    
+                    <div class="floating-badges">
+                        <div class="float-badge">Mathematics</div>
+                        <div class="float-badge">Physical Sciences</div>
+                        <div class="float-badge">CAPS Aligned</div>
+                    </div>
+                </div>
+                
+                <h2 class="welcome-title">Your AI Study Companion</h2>
+                <p class="welcome-subtitle">Master the CAPS curriculum with personalized AI tutoring. Ask questions, practice past papers, or get help with homework across all subjects.</p>
+                
+                <div class="quick-actions">
+                    <div class="action-card" onclick="setInput('Explain quadratic equations and how to solve them')">
+                        <div class="action-icon">
+                            <span class="material-symbols-rounded">function</span>
+                        </div>
+                        <h3>Learn Concepts</h3>
+                        <p>Get detailed explanations of any CAPS topic with worked examples</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="setInput('Show me a Grade 12 Mathematics past paper question on calculus')">
+                        <div class="action-icon">
+                            <span class="material-symbols-rounded">assignment</span>
+                        </div>
+                        <h3>Practice Papers</h3>
+                        <p>Access past exam questions with step-by-step solutions</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="setInput('Help me understand DNA replication in Life Sciences')">
+                        <div class="action-icon">
+                            <span class="material-symbols-rounded">biotech</span>
+                        </div>
+                        <h3>Homework Help</h3>
+                        <p>Get instant assistance with assignments and difficult topics</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="setInput('What are the key themes in Macbeth for English Literature?')">
+                        <div class="action-icon">
+                            <span class="material-symbols-rounded">menu_book</span>
+                        </div>
+                        <h3>Literature Analysis</h3>
+                        <p>Deep dive into setworks with character and theme analysis</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex items-center gap-2 text-xs text-slate-500 mono">
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+                    Neural Core v4.2.0 • xAI Powered • CAPS Aligned
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea 
+                    class="chat-input" 
+                    id="userInput" 
+                    placeholder="Ask about any CAPS topic, past paper, or homework question..." 
+                    rows="1"
+                    disabled
+                ></textarea>
+                <div class="input-actions">
+                    <button class="icon-btn" onclick="clearChat()" title="Clear chat">
+                        <span class="material-symbols-rounded">delete_sweep</span>
+                    </button>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                        <span class="material-symbols-rounded">arrow_upward</span>
+                    </button>
+                </div>
+            </div>
+            <div class="disclaimer">
+                VYNIX AI provides educational guidance aligned with CAPS curriculum
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <div class="brand-icon">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <defs>
+                        <linearGradient id="modalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00f0ff"/>
+                            <stop offset="100%" style="stop-color:#7000ff"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="20" cy="20" r="18" stroke="url(#modalGrad)" stroke-width="2"/>
+                    <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20" stroke="url(#modalGrad)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="4" fill="url(#modalGrad)"/>
+                </svg>
+            </div>
+            <h2>Welcome to VYNIX AI</h2>
+            <p>Sign in to access your personalized CAPS curriculum tutor</p>
+            <button class="google-btn" onclick="signInWithGoogle()">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Subject Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()">
+        <div class="subject-sidebar" onclick="event.stopPropagation()">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">Select Subject</h3>
+                <button class="close-sidebar" onclick="toggleSidebar()">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+            
+            <div class="subject-list" id="subjectList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
+            authDomain: "fire-b-a8878.firebaseapp.com",
+            projectId: "fire-b-a8878",
+            databaseURL: "https://fire-b-a8878-default-rtdb.firebaseio.com",
+            appId: "1:658673187627:web:6e4c29af661785f0afa36e"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const remoteConfig = firebase.remoteConfig();
+        const database = firebase.database();
+        
+        let XAI_API_KEY = "";
+        const MODEL_ID = "grok-4-1-fast-reasoning";
+        
+        let currentUser = null;
+        let isProcessing = false;
+        let conversationHistory = [];
+        let currentSubject = 'mathematics';
+        let currentGrade = '12';
+        
+        const subjects = {
+            'mathematics': { name: 'Mathematics', icon: 'calculate', grades: '4-12', color: 'cyan' },
+            'physical-sciences': { name: 'Physical Sciences', icon: 'science', grades: '10-12', color: 'purple' },
+            'life-sciences': { name: 'Life Sciences', icon: 'biotech', grades: '10-12', color: 'green' },
+            'accounting': { name: 'Accounting', icon: 'account_balance', grades: '10-12', color: 'gold' },
+            'english': { name: 'English FAL', icon: 'menu_book', grades: '4-12', color: 'blue' },
+            'afrikaans': { name: 'Afrikaans FAL', icon: 'translate', grades: '4-12', color: 'red' },
+            'history': { name: 'History', icon: 'history_edu', grades: '4-12', color: 'orange' },
+            'geography': { name: 'Geography', icon: 'public', grades: '4-12', color: 'teal' }
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        
+        async function initializeApp() {
+            remoteConfig.settings = { minimumFetchIntervalMillis: 0 };
+            try {
+                await remoteConfig.fetchAndActivate();
+                XAI_API_KEY = remoteConfig.getValue('xai_api_key').asString();
+            } catch (error) {
+                console.error('Remote Config error:', error);
+                XAI_API_KEY = "your-xai-api-key-here";
+            }
+            
+            renderSubjectList();
+            createNeuralBackground();
+        }
+
+        function createNeuralBackground() {
+            const container = document.getElementById('neuralBg');
+            for (let i = 0; i < 20; i++) {
+                const node = document.createElement('div');
+                node.className = 'neural-node';
+                node.style.left = Math.random() * 100 + '%';
+                node.style.top = Math.random() * 100 + '%';
+                node.style.animationDelay = Math.random() * 4 + 's';
+                container.appendChild(node);
+            }
+        }
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+        
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            updateUI(user);
+            
+            const input = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            
+            input.disabled = !user;
+            sendBtn.disabled = !user;
+            
+            if (user) {
+                loadUserPreferences();
+            }
+        });
+
+        function updateUI(user) {
+            const userBtn = document.getElementById('userBtn');
+            if (user && user.photoURL) {
+                userBtn.innerHTML = `<img src="${user.photoURL}" alt="Profile">`;
+            } else if (user) {
+                userBtn.innerHTML = `<span class="font-bold text-cyan-400 text-sm">${user.displayName?.[0] || 'U'}</span>`;
+            } else {
+                userBtn.innerHTML = `<span class="material-symbols-rounded">person</span>`;
+            }
+        }
+
+        function toggleAuth() {
+            if (!currentUser) {
+                document.getElementById('authModal').classList.add('active');
+            } else {
+                if (confirm('Sign out of VYNIX AI?')) {
+                    auth.signOut();
+                    conversationHistory = [];
+                    resetChat();
+                }
+            }
+        }
+
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(error => {
+                console.error('Auth error:', error);
+                alert('Sign in failed. Please try again.');
+            });
+        }
+
+        // ==========================================
+        // SUBJECT MANAGEMENT
+        // ==========================================
+        
+        function renderSubjectList() {
+            const list = document.getElementById('subjectList');
+            list.innerHTML = Object.entries(subjects).map(([key, subject]) => `
+                <div class="subject-item ${key === currentSubject ? 'active' : ''}" onclick="selectSubject('${key}')">
+                    <div class="subject-icon-small">
+                        <span class="material-symbols-rounded">${subject.icon}</span>
+                    </div>
+                    <div class="subject-info">
+                        <h4>${subject.name}</h4>
+                        <p>Grades ${subject.grades}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectSubject(subjectKey) {
+            currentSubject = subjectKey;
+            const subject = subjects[subjectKey];
+            
+            document.getElementById('subjectSelect').value = subjectKey;
+            document.getElementById('currentSubjectIcon').textContent = subject.icon;
+            document.getElementById('currentSubjectIcon').className = `material-symbols-rounded text-${subject.color}-400`;
+            
+            renderSubjectList();
+            toggleSidebar();
+            
+            // Add system message about subject change
+            if (currentUser && conversationHistory.length > 0) {
+                addMessage('ai', `Switched to ${subject.name}. How can I help you with this subject?`);
+            }
+            
+            saveUserPreferences();
+        }
+
+        function changeSubject(value) {
+            selectSubject(value);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        // ==========================================
+        // USER PREFERENCES
+        // ==========================================
+        
+        function saveUserPreferences() {
+            if (!currentUser) return;
+            
+            database.ref('users/' + currentUser.uid).update({
+                currentSubject: currentSubject,
+                currentGrade: currentGrade,
+                lastActive: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        function loadUserPreferences() {
+            if (!currentUser) return;
+            
+            database.ref('users/' + currentUser.uid).once('value').then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    if (data.currentSubject) {
+                        currentSubject = data.currentSubject;
+                        document.getElementById('subjectSelect').value = currentSubject;
+                        document.getElementById('currentSubjectIcon').textContent = subjects[currentSubject].icon;
+                    }
+                    if (data.currentGrade) {
+                        currentGrade = data.currentGrade;
+                        document.getElementById('gradeBadge').textContent = `Grade ${currentGrade}`;
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // CHAT FUNCTIONS
+        // ==========================================
+        
+        function setInput(text) {
+            if (!currentUser) {
+                toggleAuth();
+                return;
+            }
+            const input = document.getElementById('userInput');
+            input.value = text;
+            input.focus();
+            autoResize(input);
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        function clearChat() {
+            if (confirm('Clear all messages?')) {
+                conversationHistory = [];
+                resetChat();
+            }
+        }
+
+        function resetChat() {
+            const messagesArea = document.getElementById('messagesArea');
+            messagesArea.innerHTML = `
+                <div class="neural-bg" id="neuralBg"></div>
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-visual">
+                        <div class="hologram-ring"></div>
+                        <div class="hologram-ring"></div>
+                        <div class="hologram-ring"></div>
+                        
+                        <svg class="brain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                            <path d="M12 6v6l4 2"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        
+                        <div class="floating-badges">
+                            <div class="float-badge">Mathematics</div>
+                            <div class="float-badge">Physical Sciences</div>
+                            <div class="float-badge">CAPS Aligned</div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="welcome-title">Your AI Study Companion</h2>
+                    <p class="welcome-subtitle">Master the CAPS curriculum with personalized AI tutoring. Ask questions, practice past papers, or get help with homework across all subjects.</p>
+                    
+                    <div class="quick-actions">
+                        <div class="action-card" onclick="setInput('Explain quadratic equations and how to solve them')">
+                            <div class="action-icon">
+                                <span class="material-symbols-rounded">function</span>
+                            </div>
+                            <h3>Learn Concepts</h3>
+                            <p>Get detailed explanations of any CAPS topic with worked examples</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="setInput('Show me a Grade 12 Mathematics past paper question on calculus')">
+                            <div class="action-icon">
+                                <span class="material-symbols-rounded">assignment</span>
+                            </div>
+                            <h3>Practice Papers</h3>
+                            <p>Access past exam questions with step-by-step solutions</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="setInput('Help me understand DNA replication in Life Sciences')">
+                            <div class="action-icon">
+                                <span class="material-symbols-rounded">biotech</span>
+                            </div>
+                            <h3>Homework Help</h3>
+                            <p>Get instant assistance with assignments and difficult topics</p>
+                        </div>
+                        
+                        <div class="action-card" onclick="setInput('What are the key themes in Macbeth for English Literature?')">
+                            <div class="action-icon">
+                                <span class="material-symbols-rounded">menu_book</span>
+                            </div>
+                            <h3>Literature Analysis</h3>
+                            <p>Deep dive into setworks with character and theme analysis</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex items-center gap-2 text-xs text-slate-500 mono">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+                        Neural Core v4.2.0 • xAI Powered • CAPS Aligned
+                    </div>
+                </div>
+            `;
+            createNeuralBackground();
+            document.getElementById('userInput').value = '';
+        }
+
+        async function sendMessage() {
+            if (isProcessing || !currentUser) return;
+            
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            isProcessing = true;
+            input.value = '';
+            autoResize(input);
+            
+            const welcome = document.getElementById('welcomeScreen');
+            if (welcome) welcome.remove();
+            
+            addMessage('user', message);
+            
+            const typingId = showTyping();
+            
+            try {
+                const response = await fetchXAIResponse(message);
+                removeTyping(typingId);
+                addMessage('ai', response);
+                
+                conversationHistory.push({ role: 'user', content: message });
+                conversationHistory.push({ role: 'assistant', content: response });
+                
+                // Keep only last 20 messages for context
+                if (conversationHistory.length > 20) {
+                    conversationHistory = conversationHistory.slice(-20);
+                }
+                
+                // Save to database
+                saveConversation(message, response);
+                
+            } catch (error) {
+                removeTyping(typingId);
+                addMessage('ai', 'I apologize, but I encountered an error processing your request. Please try again or rephrase your question.');
+                console.error('xAI Error:', error);
+            }
+            
+            isProcessing = false;
+        }
+
+        async function fetchXAIResponse(message) {
+            const subject = subjects[currentSubject];
+            
+            const systemPrompt = `You are VYNIX AI, an expert educational tutor specializing in the South African CAPS (Curriculum and Assessment Policy Statement) curriculum.
+
+CURRENT CONTEXT:
+- Subject: ${subject.name}
+- Grade Level: Grade ${currentGrade}
+- Student Name: ${currentUser?.displayName || 'Student'}
+
+CRITICAL GUIDELINES:
+1. STRICTLY align all content with the official South African CAPS curriculum
+2. Provide accurate, curriculum-specific information for the specified grade level
+3. Use appropriate terminology and complexity for the grade level
+4. Include worked examples where relevant, showing all steps clearly
+5. For Mathematics and Physical Sciences, show formulas and calculations step-by-step
+6. For Languages, focus on comprehension, literature analysis, and writing skills per CAPS
+7. For Life Sciences, ensure biological accuracy and use correct terminology
+8. Reference past paper questions and exam techniques when relevant
+9. If unsure about specific curriculum details, acknowledge and suggest consulting the official CAPS document
+10. Never provide incorrect curriculum information - accuracy is paramount
+
+TEACHING APPROACH:
+- Explain concepts clearly with examples
+- Use Socratic method when appropriate (guide student to answers)
+- Provide practice questions with solutions
+- Link concepts to real-world applications where relevant
+- Encourage critical thinking per CAPS cognitive levels
+
+Current date: ${new Date().toISOString().split('T')[0]}`;
+            
+            const messages = [
+                { role: "system", content: systemPrompt },
+                ...conversationHistory.slice(-10).map(msg => ({
+                    role: msg.role === 'assistant' ? 'assistant' : 'user',
+                    content: msg.content
+                })),
+                { role: "user", content: message }
+            ];
+            
+            const response = await fetch("https://api.x.ai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${XAI_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: MODEL_ID,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 2000,
+                    stream: false
+                })
+            });
+            
+            if (!response.ok) throw new Error('API request failed');
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function saveConversation(userMsg, aiMsg) {
+            if (!currentUser) return;
+            
+            const conversationRef = database.ref('conversations/' + currentUser.uid).push();
+            conversationRef.set({
+                subject: currentSubject,
+                grade: currentGrade,
+                userMessage: userMsg,
+                aiMessage: aiMsg,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        function addMessage(role, content) {
+            const messagesArea = document.getElementById('messagesArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const time = new Date().toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' });
+            const isHTML = content.includes('<div') || content.includes('<code') || content.includes('<pre');
+            
+            // Process content for display
+            let processedContent = content;
+            if (!isHTML) {
+                // Convert markdown-style formatting
+                processedContent = content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-400">$1</strong>')
+                    .replace(/`(.*?)`/g, '<code class="mono bg-slate-800 px-2 py-1 rounded text-cyan-400">$1</code>')
+                    .replace(/\n/g, '<br>');
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    ${role === 'ai' ? 'V' : currentUser?.displayName?.[0] || 'U'}
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">${isHTML ? content : processedContent}</div>
+                    <div class="message-meta">
+                        ${role === 'ai' ? '<span class="material-symbols-rounded text-xs">verified</span> VYNIX AI • ' : ''}
+                        ${time}
+                    </div>
+                </div>
+            `;
+            
+            messagesArea.appendChild(messageDiv);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function showTyping() {
+            const messagesArea = document.getElementById('messagesArea');
+            const id = 'typing-' + Date.now();
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = id;
+            typingDiv.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesArea.appendChild(typingDiv);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        
+        document.getElementById('userInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        document.getElementById('userInput').addEventListener('input', function() {
+            autoResize(this);
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('authModal').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            }
+        });
+
+        // Initialize
+        initializeApp();
+    </script>
+</body>
+</html>
